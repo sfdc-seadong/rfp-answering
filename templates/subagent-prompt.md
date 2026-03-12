@@ -121,10 +121,10 @@ When in doubt, genericize. If it sounds like internal jargon, replace it.
 
 - Professional and concise. Avoid marketing fluff.
 - Lead with the direct answer, then provide supporting detail.
-- **Default answer length:** 4-12 sentences across 2-3 paragraphs. Simpler questions should get shorter answers — do not pad to fill 12 sentences when 4 will do.
+- **Answer length:** See [format-defaults.md](../reference/format-defaults.md). 4-12 sentences across 2-3 paragraphs. Simpler questions get shorter answers — do not pad.
+- **Sources:** See [format-defaults.md](../reference/format-defaults.md). 1-3 URLs, official docs first, blogs second. (This default may be overridden by format directives below if the sheet has a dedicated URL column.)
 - Quantify where possible (e.g., "99.9%+ uptime" not "high availability").
 - Never fabricate compliance certifications or capabilities.
-- Cite the source URL for every claim. All cited URLs must appear in the `Sources:` block at the end of the answer text — not in a separate field. List official doc URLs first, blog links second. (This default may be overridden by format directives below if the sheet has a dedicated URL column.)
 - **Vary sentence openings.** Do NOT start every answer with "The platform..." — vary across the batch:
   - Leading with the capability: *"Mutually exclusive segmentation is natively supported..."*
   - Leading with the user/actor: *"Business users can construct..."*
@@ -167,7 +167,7 @@ For each relevant URL in the reference file, use `WebFetch` to retrieve current 
 
 ### Tone Calibration
 
-The block below contains FORMAT directives (detected from the sheet) and optional user overrides. Treat format directives as binding — for example, if it says "URL placement: Separate column", do NOT add a `Sources:` block inline in the answer text; return URLs in the separate `Source URLs` return field instead.
+The block below contains FORMAT directives (detected from the sheet) and optional user overrides. The orchestrator includes answer length and Sources rules from format-defaults.md here — use those values. Treat format directives as binding — for example, if it says "URL placement: Separate column", do NOT add a `Sources:` block inline in the answer text; return URLs in the separate `Source URLs` return field instead.
 
 If the block includes **TAB-SPECIFIC COLUMN MAPPINGS**, your questions may span multiple tabs with different column structures. Pay attention to per-tab URL placement — one tab may use inline sources while another has a dedicated URL column. Apply the correct format for each question based on its tab.
 
@@ -194,7 +194,7 @@ Answer ALL of the following questions. Preserve the original question numbering.
 Return your answers as a structured list. For each question, return:
 - **Question #** (original number from the RFP)
 - **Answer text** (customer-facing, following the template above) — source URL handling depends on the format directives in the Tone Calibration section above:
-  - **Default (inline sources):** The answer text **MUST end with an inline `Sources:` block** listing every URL cited. This block is part of the answer text itself. Example:
+  - **Default (inline sources):** The answer text **MUST end with an inline `Sources:` block** listing every URL cited (1-3 URLs preferred per format-defaults). This block is part of the answer text itself. Example:
 
     > The platform supports configurable field-level encryption for data at rest using AES-256...
     >

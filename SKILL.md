@@ -35,7 +35,8 @@ Scan this before every drafting session. Full definitions are in the sections be
 | Product names | No Salesforce product names in customer text by default. Use generic terms. |
 | Confidence | No hedging, no "verify with account team," no confidence ratings in customer text. |
 | Review flags | Auto-approved (GA + official docs) · SME Review (beta, benchmarks, competitive) · Legal Review (certs, compliance, SLAs) |
-| Sources | Every answer cites a live URL. Stable URLs fetched directly; help.salesforce.com URLs discovered via search queries. Official docs first, blogs second. |
+| Answer length | See [format-defaults.md](reference/format-defaults.md). 4-12 sentences. |
+| Sources | See [format-defaults.md](reference/format-defaults.md). 1-3 URLs, official docs first, blogs second. |
 | Accuracy | "Supported when configured" ≠ "enabled by default." Shield features are paid add-ons. |
 | Sentence variety | Vary openings across the batch — no repeated "The platform..." pattern. |
 
@@ -56,6 +57,8 @@ Verify **every item** before drafting any answer. Do not skip this.
 - [ ] Telephony behaviors (recording, storage, transcription) belong to the telephony provider layer, not the platform
 - [ ] Recording storage region is determined by telephony provider config, not org region
 - [ ] Legal hold covers platform-resident data only — external storage needs separate retention
+- [ ] Every answer includes Sources (1-3 URLs per format-defaults)
+- [ ] Answer length 4-12 sentences — or 2-3 in concise mode (see [format-defaults.md](reference/format-defaults.md))
 
 ## Workflow
 
@@ -142,6 +145,7 @@ When multiple Salesforce products can address a question, follow this priority o
 - Use the appropriate template from [templates/](templates/).
 - For individual Q&A or freeform responses, use [single-answer.md](templates/single-answer.md).
 - For spreadsheet / tabular RFP formats, use [spreadsheet-format.md](templates/spreadsheet-format.md).
+- Answer length and Sources are defined in [format-defaults.md](reference/format-defaults.md).
 - See [sample-qa.md](examples/sample-qa.md) for tone and style calibration.
 
 #### Scoring Strategy
@@ -281,9 +285,9 @@ Every answer gets an internal review flag for team triage. These flags are **nev
 - Lead with the direct answer, then provide supporting detail.
 - Quantify where possible (e.g., "99.9%+ uptime" not "high availability").
 - Never fabricate compliance certifications or capabilities, but present real capabilities in the strongest possible light.
-- Cite the source URL for every claim. By default, all cited URLs must appear in a `Sources:` block at the end of the answer text so they survive sheet writes. (This is overridden when the sheet has a dedicated URL column — see Document Format Detection.)
+- **Answer length:** See [format-defaults.md](reference/format-defaults.md) — 4-12 sentences across 2-3 paragraphs. Simpler questions should get shorter answers — do not pad.
+- **Sources:** See [format-defaults.md](reference/format-defaults.md) — 1-3 URLs, official docs first, blogs second. Inline by default; omit when the sheet has a dedicated URL column (see Document Format Detection).
 - **Concise mode:** When the user requests brevity, combine the answer and supporting detail into 2-3 dense sentences. Do not split into separate answer/detail blocks.
-- **Default answer length:** 4-12 sentences across 2-3 paragraphs. Simpler questions should get shorter answers — do not pad to fill 12 sentences when 4 will do. Lead with the direct answer in sentence one; use remaining sentences for the architectural mechanism and key evidence.
 - **Vary sentence openings.** Do NOT start every answer with "The platform..." or any single repeated phrase. Across a batch of answers, vary the opening structure:
   - Leading with the capability: *"Mutually exclusive segmentation is natively supported..."*
   - Leading with the user/actor: *"Business users can construct..."*
@@ -299,10 +303,10 @@ Every answer gets an internal review flag for team triage. These flags are **nev
 Before drafting any answers, detect these FORMAT signals from the sheet. This is a mandatory pre-write step for every mode (Standard, Batch, Parallel Agent).
 
 - **Column structure**: Read the header row to determine which columns hold ratings, answers, documentation URLs, and comments. Map answer fields to exact columns. Different tabs in the same RFP may use different column structures. For multi-tab sheets, follow the full discovery recipe in [google-workspace.md](reference/google-workspace.md).
-- **URL placement**: If the sheet has a dedicated documentation/URL column (e.g., "Salesforce Documentation"), put URLs there and do NOT add an inline `Sources:` block in the answer text. If no dedicated column exists, include `Sources:` inline per the default Tone & Style behavior.
+- **URL placement**: If the sheet has a dedicated documentation/URL column (e.g., "Salesforce Documentation"), put URLs there and do NOT add an inline `Sources:` block in the answer text. If no dedicated column exists, include `Sources:` inline per [format-defaults.md](reference/format-defaults.md).
 - **Product names**: Always default to OFF (no Salesforce product names in customer-facing text). Only switch to ON if the user explicitly requests it. Do NOT infer product name mode from existing answers in the sheet — other responders may have used product names, but that does not change the default.
 - **Scoring rubric**: Detect the scale from headers (1-5, Yes/No, compliance status, custom rubric). Also check instruction-type tabs ("Instructions", "Scoring Guide", "Rubric", "How to Respond") for custom rubric definitions — many complex RFPs define their scale on a separate tab rather than in column headers.
-- **Separator rows**: RFP sheets intersperse section headers and blank rows between questions. A row is a separator (not a question) if it has no value in the question-number column, fewer than 2 cells are populated, or it contains a single text value that reads as a section label (e.g., "SECURITY REQUIREMENTS"). Skip separators when counting questions but preserve their row numbers for accurate write-back mapping.
+- **Separator rows**: RFP sheets intersperse section headers and blank rows between questions. A row is a separator (not a question) if it has no value in the question-number column, fewer than 2 cells are populated, or it contains a single text value that reads as a section label (e.g., "SECURITY REQUIREMENTS"). Skip separators when counting questions but preserve their row numbers for accurate write-back mapping. **Critical for Google Sheets write-back:** Build the question-to-row mapping by reading the sheet row-by-row and recording which rows contain actual questions (non-empty in the column holding question text, detected from headers). Do not assume row N = question N — section headers create gaps (e.g., Q28 at row 30, section header at row 29, Q29 at row 31). Persist this mapping (e.g., `sheet-question-rows.json`) before drafting or spawning agents so write-back places each answer in the correct cell.
 - **Dual response columns**: When the sheet has two response columns (e.g., "Direct Response" and "Descriptive Response"), write the short compliance statement or score in the first/narrower column and the full narrative answer in the second/wider column. Infer the split from column header names — "Direct" / "Short" / "Yes/No" columns get the concise response; "Descriptive" / "Detail" / "Evidence" / "Supporting" columns get the comprehensive answer.
 
 > **Do NOT extract writing tone, depth, sentence structure, or technical level from existing answers.** These are governed exclusively by the Tone & Style section of this skill. Existing answers in the sheet may vary in quality; the skill's guidelines are the authoritative standard. Never let another person's writing style influence the output.
@@ -368,7 +372,7 @@ For medium-sized RFPs (10–14 questions), use batch mode to process the entire 
 Before drafting all answers, give the user a chance to calibrate tone, depth, and style:
 
 1. Select 2-3 representative questions from each major section (prioritize competitive-sensitive or high-weight questions).
-2. Draft full answers for only these sample questions, following the appropriate answer depth from [spreadsheet-format.md](templates/spreadsheet-format.md).
+2. Draft full answers for only these sample questions, following the answer length from [format-defaults.md](reference/format-defaults.md) (4-12 sentences).
 3. Present the samples to the user grouped by section and ask: *"Here are sample answers for each section. Are the tone, depth, and level of detail what you're looking for, or would you like me to adjust before I draft the rest?"*
 4. Incorporate any feedback (e.g., "more technical", "shorter", "add more sources", "too generic") before proceeding.
 5. If the user is satisfied or explicitly says to proceed, move to Phase 4.
@@ -384,7 +388,7 @@ Before drafting all answers, give the user a chance to calibrate tone, depth, an
 1. **Source preservation rule (MANDATORY):** Source handling depends on the sheet's URL placement mode:
    - **Inline mode (default — no dedicated URL column):** Every answer cell MUST include the `Sources:` block at the end. Do not strip, truncate, or separate sources from the answer text.
    - **Separate column mode (sheet has a dedicated URL column):** Write the answer text WITHOUT a `Sources:` block. Write the source URLs to the designated URL column in the same row.
-2. **Column detection (before writing):** Read the header row of each target tab to determine which columns to write to. Different tabs may use different column structures. Map question numbers to exact sheet row numbers by accounting for header rows and separator rows.
+2. **Column detection (before writing):** Read the header row of each target tab to determine which columns to write to. Different tabs may use different column structures. Map question numbers to exact sheet row numbers using the question-to-row mapping built from the sheet (see Document Format Detection). Do not assume row N = question N — use the persisted mapping.
 3. After drafting, write all answers using `sheets_batch_update_values`. For 10+ answers, split into chunks of 25-40 rows per API call to avoid payload limits.
 4. Write review flags to the "Review" tab. Create it with `sheets_insert_sheet` if it doesn't exist. If it already has entries, use `sheets_append_values` with `insertDataOption: "INSERT_ROWS"` to add new entries.
 5. Inform the user that answers are written and ready for review in the sheet.
@@ -479,7 +483,7 @@ Build each subagent's prompt using the template at [templates/subagent-prompt.md
 - `{{ANSWER_TEMPLATE}}` — the appropriate answer template (single-answer or spreadsheet-format), included verbatim
 - `{{COMPETITIVE_CONTEXT}}` — relevant sections from `competitive-positioning.md` (if any questions are competitive-sensitive; otherwise "None — no competitive-sensitive questions in this batch")
 - `{{DEAL_CONTEXT}}` — any deal context the user provided (otherwise "None provided")
-- `{{TONE_CALIBRATION}}` — Document format directives detected from the sheet (URL placement, column mapping, scoring rubric) plus any explicit user instructions on depth/style. Tone and writing quality always follow the skill's built-in Tone & Style guidelines — never inferred from existing answers. Include per-tab column mappings when the agent's questions span multiple tabs.
+- `{{TONE_CALIBRATION}}` — Document format directives detected from the sheet (URL placement, column mapping, scoring rubric) plus any explicit user instructions on depth/style. **Include the answer length and Sources rules from [format-defaults.md](reference/format-defaults.md).** Tone and writing quality always follow the skill's built-in Tone & Style guidelines — never inferred from existing answers. Include per-tab column mappings when the agent's questions span multiple tabs.
 
   **Single-tab example:**
   ```
@@ -489,9 +493,10 @@ Build each subagent's prompt using the template at [templates/subagent-prompt.md
   - Scoring: 1-5 self-rating scale
   - Answer column: Col F (Vendor Notes) — single response column
 
-  TONE (from skill guidelines):
-  - Follow the Tone & Style section: professional, concise, architecturally framed
+  TONE (from format-defaults.md):
   - Answer length: 4-12 sentences across 2-3 paragraphs (shorter when simple)
+  - Sources: 1-3 URLs, official docs first, blogs second
+  - Follow Tone & Style: professional, concise, architecturally framed
   - Vary sentence openings across the batch
   - Quantify where possible
   ```
@@ -507,9 +512,10 @@ Build each subagent's prompt using the template at [templates/subagent-prompt.md
   - Tab "Commercial Proposal": Answer → col C, Score → col D
   - Tab "NFR": Direct Response → col D (short compliance statement), Descriptive Response → col E (full narrative), Documentation → col F (source URLs — do NOT inline Sources: for NFR questions)
 
-  TONE (from skill guidelines):
-  - Follow the Tone & Style section: professional, concise, architecturally framed
+  TONE (from format-defaults.md):
   - Answer length: 4-12 sentences across 2-3 paragraphs (shorter when simple)
+  - Sources: 1-3 URLs, official docs first, blogs second
+  - Follow Tone & Style: professional, concise, architecturally framed
   - Vary sentence openings across the batch
   - Quantify where possible
   ```
@@ -531,7 +537,7 @@ Build each subagent's prompt using the template at [templates/subagent-prompt.md
 1. **Source preservation rule (MANDATORY):** Source handling depends on the sheet's URL placement mode:
    - **Inline mode (default — no dedicated URL column):** The exact text written to each answer cell MUST include the `Sources:` block at the end. Do not strip, truncate, or separate sources from the answer text. The cell value the evaluator sees must contain both the answer and its sources as a single block of text.
    - **Separate column mode (sheet has a dedicated URL column):** Write the answer text WITHOUT a `Sources:` block. Write the source URLs to the designated URL column in the same row. Do not duplicate URLs in both locations.
-2. **Column detection (before writing):** Read the header row of each target tab to determine which columns to write to. Different tabs in the same RFP often use different column structures (e.g., Commercial Proposal may have a single response column C, while NFR has "Direct Response" in column D and "Descriptive Response" in column E). Map question numbers to exact sheet row numbers by accounting for header rows, separator rows, and any row-numbering gaps in the source data.
+2. **Column detection (before writing):** Read the header row of each target tab to determine which columns to write to. Different tabs in the same RFP often use different column structures (e.g., Commercial Proposal may have a single response column C, while NFR has "Direct Response" in column D and "Descriptive Response" in column E). Map question numbers to exact sheet row numbers using the question-to-row mapping built from the sheet (see Document Format Detection). Section headers and blank rows create non-sequential row numbers — do not assume row N = question N; use the persisted mapping (e.g., `sheet-question-rows.json`).
 3. For Google Sheets: batch-write answers and review flags using `sheets_batch_update_values`. **For large answer sets (50+ questions), split writes into chunks of 25-40 rows per API call** to avoid payload limits and timeouts. Write review flags to the Review tab in separate batches after all answer cells are written.
 4. **Review tab:** Create with `sheets_insert_sheet` if it doesn't exist. If it already has entries from a prior session, use `sheets_append_values` with `insertDataOption: "INSERT_ROWS"` to add new review entries after the existing ones — do not overwrite existing review data.
 5. For chat: present the full answer set to the user, sources included.

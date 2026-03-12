@@ -1,6 +1,6 @@
 # Sample RFP Q&A Pairs
 
-These examples calibrate tone, length, and style for RFP responses. Use them as a reference when drafting answers.
+These examples calibrate tone, length, and style for RFP responses. Use them as a reference when drafting answers. Answer length and Sources follow [format-defaults.md](../reference/format-defaults.md).
 
 **All examples below use the default "no product names" mode** — generic terms replace Salesforce product names per the mapping in SKILL.md. For product-names-mode examples, see the [Product Names Mode](#product-names-mode-examples) section at the bottom.
 

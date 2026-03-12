@@ -7,14 +7,14 @@ Use this format when the RFP requires responses in a table or spreadsheet format
 ```markdown
 | # | Question | Answer | Compliance | Notes |
 |---|----------|--------|------------|-------|
-| 1 | [Question text] | [Concise answer] | [Yes / Partial / No / N/A] | [Caveats, add-on required, or verification needed] |
+| 1 | [Question text] | [4-12 sentence answer] | [Yes / Partial / No / N/A] | [Caveats, add-on required, or verification needed] |
 ```
 
 ## Column Definitions
 
 - **#**: Question number from the original RFP
 - **Question**: Original question text (verbatim or summarized)
-- **Answer**: Concise response (1-3 sentences). Lead with the direct answer. **Must end with a `Sources:` block** listing every URL cited (see example below). Sources are part of the cell text so they survive copy/paste and sheet writes.
+- **Answer**: 4-12 sentences (see [format-defaults.md](../reference/format-defaults.md)). Lead with the direct answer. **Must end with a `Sources:` block** (see format-defaults). Sources are part of the cell text so they survive copy/paste and sheet writes.
 - **Compliance**: Assessment of whether the capability is available without additional licensing
   - **Yes** -- Fully supported out of the box or with standard configuration
   - **Partial** -- Supported with add-on licensing, custom development, or specific edition
@@ -58,24 +58,22 @@ When writing answers to a Google Sheet, write review flags using one of these ap
 - Match the original RFP's numbering exactly.
 - If the original RFP uses different column headers, adapt this template to match.
 - Always assign a review flag to every answer — the review team uses these to triage their limited review time.
-- Every answer cell must end with a `Sources:` block containing 1-3 URLs. Sources live inside the answer text so they survive sheet writes — do not put them in a separate column or field.
+- Sources: See [format-defaults.md](../reference/format-defaults.md). Use newline-separated URLs in sheet cells (no bullets).
 
-### Answer Depth: Adapt to the Customer's Template
+### Answer Depth
 
-The depth of each answer depends on whether the customer's template provides separate columns for detail:
+Answer length is 4-12 sentences for all column structures (see [format-defaults.md](../reference/format-defaults.md)).
 
 **When the template has separate Answer + Notes/Detail columns:**
-- Keep the Answer column concise (1-3 sentences). Lead with the direct answer.
-- Move supporting detail, caveats, and technical specifics to the Notes column.
-- Use the Compliance column for quick-scan evaluation.
+- Write the full 4-12 sentence answer in the Answer column. Lead with the direct answer in the first sentence.
+- Use the Notes column for compliance caveats, add-on requirements, or verification notes — not for splitting the narrative.
 
-**When the template has a single response column (no separate Notes or Detail column):**
-- Write a self-contained response of 4-12 sentences across 2-3 paragraphs. Shorter questions get shorter answers — do not pad.
-- Lead with the direct answer in the first sentence.
-- Follow with specific mechanisms, capabilities, and how the platform meets the requirement.
+**When the template has a single response column:**
+- Write a self-contained 4-12 sentence response. Shorter questions get shorter answers — do not pad.
+- Lead with the direct answer in the first sentence. Follow with specific mechanisms, capabilities, and how the platform meets the requirement.
 - Include caveats, limitations, or configuration details inline rather than omitting them.
 
 **How to detect which mode to use:**
-- Read the customer's column headers before writing. If there is only one response column (e.g., "Vendor Response", "Supporting Evidence", "Comments"), use the comprehensive single-column format.
-- If the template has multiple response columns (e.g., "Answer" + "Notes" + "Compliance"), use the split format.
-- When in doubt, default to the comprehensive format — a thorough answer in one column is always better than a thin answer missing supporting detail.
+- Read the customer's column headers before writing. If there is only one response column (e.g., "Vendor Response", "Supporting Evidence", "Comments"), use the single-column format.
+- If the template has multiple response columns (e.g., "Answer" + "Notes" + "Compliance"), put the full answer in the Answer column; Notes is for supplementary caveats only.
+- When in doubt, default to a thorough answer — 4-12 sentences with full supporting detail.

@@ -2,6 +2,9 @@
 
 Use this format when responding to individual RFP questions in a freeform Q&A format.
 
+- **Answer length:** See [format-defaults.md](../reference/format-defaults.md). Total: 4-12 sentences across 2-3 paragraphs.
+- **Sources:** See [format-defaults.md](../reference/format-defaults.md). Use bullet list format for chat output.
+
 ## Standard Format
 
 ```
@@ -9,12 +12,12 @@ Use this format when responding to individual RFP questions in a freeform Q&A fo
 
 **Answer:** [Direct, concise answer in 1-2 sentences]
 
-[Supporting detail: 2-5 sentences expanding on the answer with specifics, certifications, product names, or metrics as appropriate]
+[Supporting detail: 2-10 sentences expanding on the answer with specifics, certifications, product names, or metrics as appropriate — total 4-12 sentences]
 
 **Review:** [Auto-approved | SME Review | Legal Review]
 **Sources:**
 - [Official doc URL from reference folder]
-- [Additional official or blog URL if needed]
+- [Additional official or blog URL if needed — 1-3 URLs total]
 ```
 
 ### Standard Format Example
@@ -43,7 +46,7 @@ Use when the user requests brevity. Combine the answer and supporting detail int
 **Review:** [Auto-approved | SME Review | Legal Review]
 **Sources:**
 - [Official doc URL from reference folder]
-- [Additional official or blog URL if needed]
+- [Additional official or blog URL if needed — 1-3 URLs total]
 ```
 
 ### Concise Format Example (Auto-approved)
