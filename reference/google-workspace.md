@@ -67,7 +67,7 @@ Use `sheets_batch_get_values` to read the header row (typically row 1) from ever
 
 Different tabs in the same RFP often use different column layouts. Record the column mapping per tab.
 
-### Step 4: Read All Questions
+### Step 4: Read All Questions and Build Question-to-Row Mapping
 
 Read the question content from each tab. For large tabs (100+ rows), read in chunks to avoid API payload limits.
 
@@ -77,6 +77,8 @@ Read the question content from each tab. For large tabs (100+ rows), read in chu
 - The row contains a single text value spanning what appears to be a section label (e.g., "SECURITY REQUIREMENTS")
 
 Skip separator rows when counting questions, but preserve their row numbers for accurate write-back mapping.
+
+**MANDATORY: Build question-to-row mapping from the sheet.** Do not assume row N = question N. Section headers and blank rows create gaps — e.g., Q28 at row 30, header at row 29, Q29 at row 31. For sheets with multiple question tabs, iterate each question tab (in tab order) and include the tab name in each mapping entry so write-back targets the correct tab and row. Iterate over sheet rows (chunked for large sheets) and record, in order, each row where the question column identified in Step 3 (the column holding question text, often labeled "Question", "Requirement", or similar) has a non-empty value. This produces a mapping: question_index 1 → row X, question_index 2 → row Y, etc. Persist this mapping (e.g., `sheet-question-rows.json`) before drafting or spawning agents. Use it when writing answers so each answer lands in the correct cell beside its question.
 
 ### Step 5: Track Tab-to-Question Mapping
 
@@ -90,8 +92,8 @@ This mapping is essential for multi-tab write-back — the orchestrator needs to
 
 ## Writing Answers Back to a Sheet
 
-1. **Standard mode (1-9 questions):** Present the proposed scores, evidence text, and target cell references to the user for approval before writing — Standard mode has no earlier approval checkpoint. **Batch and Parallel Agent modes:** Write directly — the user already approved the plan (Phase 1) and calibrated tone (Phase 2/3), so a third approval gate is unnecessary.
-2. Use the tab-to-question mapping from the read phase to write each answer to the correct tab, row, and column. Different tabs may use different column structures.
+1. **Approval flow:** The user approves the plan in Phase 1 (summary table) before drafting. Write directly after subagents complete — no additional approval gate.
+2. Use the question-to-row mapping built during format detection (from reading the sheet row-by-row) to write each answer to the correct tab, row, and column. **Never assume sequential row numbers** — section headers and blank rows mean question N may not be in row N. Different tabs may use different column structures.
 3. If the RFP sheet has specific columns for answers (e.g., "Vendor Response", "Compliance Status", "Notes"), map the template fields to those columns.
 4. Use `sheets_batch_update_values` to write all answers. For large answer sets (50+ questions), split into chunks of 25-40 rows per call.
 5. **Review tab:**

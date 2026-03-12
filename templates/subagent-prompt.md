@@ -1,6 +1,6 @@
 # Subagent Prompt Template
 
-Use this template when spawning subagents in Parallel Agent Mode. Read this file, replace every `{{PLACEHOLDER}}` with actual values, and send the result as the subagent prompt. The template is self-contained — subagents do not have access to SKILL.md.
+Use this template when spawning subagents in the orchestrator workflow. Read this file, replace every `{{PLACEHOLDER}}` with actual values, and send the result as the subagent prompt. The template is self-contained — subagents do not have access to SKILL.md.
 
 ---
 
@@ -121,8 +121,8 @@ When in doubt, genericize. If it sounds like internal jargon, replace it.
 
 - Professional and concise. Avoid marketing fluff.
 - Lead with the direct answer, then provide supporting detail.
-- **Answer length:** See [format-defaults.md](../reference/format-defaults.md). 4-12 sentences across 2-3 paragraphs. Simpler questions get shorter answers — do not pad.
-- **Sources:** See [format-defaults.md](../reference/format-defaults.md). 1-3 URLs, official docs first, blogs second. (This default may be overridden by format directives below if the sheet has a dedicated URL column.)
+- **Answer length:** See [format-defaults.md](../reference/format-defaults.md). Simpler questions get shorter answers — do not pad.
+- **Sources:** See [format-defaults.md](../reference/format-defaults.md). (This default may be overridden by format directives below if the sheet has a dedicated URL column.)
 - Quantify where possible (e.g., "99.9%+ uptime" not "high availability").
 - Never fabricate compliance certifications or capabilities.
 - **Vary sentence openings.** Do NOT start every answer with "The platform..." — vary across the batch:
@@ -171,7 +171,7 @@ The block below contains FORMAT directives (detected from the sheet) and optiona
 
 If the block includes **TAB-SPECIFIC COLUMN MAPPINGS**, your questions may span multiple tabs with different column structures. Pay attention to per-tab URL placement — one tab may use inline sources while another has a dedicated URL column. Apply the correct format for each question based on its tab.
 
-Writing tone, depth, and quality are governed by the Tone & Style section above. Do NOT infer tone from any existing answers in the sheet — those are for format detection only. The skill's guidelines are the authoritative standard.
+Writing tone, depth, and quality are governed by the Tone & Style section above. Do NOT infer tone from any sample content the orchestrator may have passed — the skill's guidelines are the authoritative standard.
 
 {{TONE_CALIBRATION}}
 
@@ -194,7 +194,7 @@ Answer ALL of the following questions. Preserve the original question numbering.
 Return your answers as a structured list. For each question, return:
 - **Question #** (original number from the RFP)
 - **Answer text** (customer-facing, following the template above) — source URL handling depends on the format directives in the Tone Calibration section above:
-  - **Default (inline sources):** The answer text **MUST end with an inline `Sources:` block** listing every URL cited (1-3 URLs preferred per format-defaults). This block is part of the answer text itself. Example:
+  - **Default (inline sources):** The answer text **MUST end with an inline `Sources:` block** listing every URL cited (count per format-defaults). This block is part of the answer text itself. Example:
 
     > The platform supports configurable field-level encryption for data at rest using AES-256...
     >

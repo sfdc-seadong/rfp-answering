@@ -2,7 +2,7 @@
 
 Use this format when responding to individual RFP questions in a freeform Q&A format.
 
-- **Answer length:** See [format-defaults.md](../reference/format-defaults.md). Total: 4-12 sentences across 2-3 paragraphs.
+- **Answer length:** See [format-defaults.md](../reference/format-defaults.md).
 - **Sources:** See [format-defaults.md](../reference/format-defaults.md). Use bullet list format for chat output.
 
 ## Standard Format
@@ -10,14 +10,14 @@ Use this format when responding to individual RFP questions in a freeform Q&A fo
 ```
 ### Q[number]: [Original question text]
 
-**Answer:** [Direct, concise answer in 1-2 sentences]
+**Answer:** [Direct answer — lead sentence(s)]
 
-[Supporting detail: 2-10 sentences expanding on the answer with specifics, certifications, product names, or metrics as appropriate — total 4-12 sentences]
+[Supporting paragraph with specifics, certifications, capabilities, or metrics. Length per format-defaults.]
 
 **Review:** [Auto-approved | SME Review | Legal Review]
 **Sources:**
-- [Official doc URL from reference folder]
-- [Additional official or blog URL if needed — 1-3 URLs total]
+- [Official doc URL]
+- [Additional URL if needed — count per format-defaults]
 ```
 
 ### Standard Format Example
@@ -32,21 +32,22 @@ MFA has been mandatory since February 2022. Multiple MFA methods are supported i
 **Review:** Auto-approved
 **Sources:**
 - https://help.salesforce.com/s/articleView?id=sf.security_overview_2fa.htm
+- https://help.salesforce.com/s/articleView?id=sf.security_2fa_requirements.htm
 ```
 
 ## Concise Format
 
-Use when the user requests brevity. Combine the answer and supporting detail into 2-3 dense sentences. No separate supporting detail block.
+Use when the user requests brevity. See [format-defaults.md](../reference/format-defaults.md) concise mode override.
 
 ```
 ### Q: [Original question text]
 
-**Answer:** [2-3 dense sentences combining the direct answer and key supporting details. No separate detail block.]
+**Answer:** [Dense answer combining direct response and key details. No separate detail block. Length per format-defaults concise override.]
 
 **Review:** [Auto-approved | SME Review | Legal Review]
 **Sources:**
 - [Official doc URL from reference folder]
-- [Additional official or blog URL if needed — 1-3 URLs total]
+- [Additional URL if needed — count per format-defaults]
 ```
 
 ### Concise Format Example (Auto-approved)

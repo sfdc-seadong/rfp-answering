@@ -7,14 +7,14 @@ Use this format when the RFP requires responses in a table or spreadsheet format
 ```markdown
 | # | Question | Answer | Compliance | Notes |
 |---|----------|--------|------------|-------|
-| 1 | [Question text] | [4-12 sentence answer] | [Yes / Partial / No / N/A] | [Caveats, add-on required, or verification needed] |
+| 1 | [Question text] | [Answer — length per format-defaults] | [Yes / Partial / No / N/A] | [Caveats, add-on required, or verification needed] |
 ```
 
 ## Column Definitions
 
 - **#**: Question number from the original RFP
 - **Question**: Original question text (verbatim or summarized)
-- **Answer**: 4-12 sentences (see [format-defaults.md](../reference/format-defaults.md)). Lead with the direct answer. **Must end with a `Sources:` block** (see format-defaults). Sources are part of the cell text so they survive copy/paste and sheet writes.
+- **Answer**: See [format-defaults.md](../reference/format-defaults.md) for length. Lead with the direct answer. **Inline mode (no dedicated URL column):** Answer must end with a `Sources:` block — sources are part of the cell text so they survive copy/paste and sheet writes. **Separate column mode (sheet has a dedicated URL column):** Omit Sources from the Answer cell; put URLs in the designated column.
 - **Compliance**: Assessment of whether the capability is available without additional licensing
   - **Yes** -- Fully supported out of the box or with standard configuration
   - **Partial** -- Supported with add-on licensing, custom development, or specific edition
@@ -62,18 +62,18 @@ When writing answers to a Google Sheet, write review flags using one of these ap
 
 ### Answer Depth
 
-Answer length is 4-12 sentences for all column structures (see [format-defaults.md](../reference/format-defaults.md)).
+Answer length: see [format-defaults.md](../reference/format-defaults.md).
 
 **When the template has separate Answer + Notes/Detail columns:**
-- Write the full 4-12 sentence answer in the Answer column. Lead with the direct answer in the first sentence.
+- Write the full answer in the Answer column (length per format-defaults). Lead with the direct answer in the first sentence.
 - Use the Notes column for compliance caveats, add-on requirements, or verification notes — not for splitting the narrative.
 
 **When the template has a single response column:**
-- Write a self-contained 4-12 sentence response. Shorter questions get shorter answers — do not pad.
+- Write a self-contained response (length per format-defaults). Shorter questions get shorter answers — do not pad.
 - Lead with the direct answer in the first sentence. Follow with specific mechanisms, capabilities, and how the platform meets the requirement.
 - Include caveats, limitations, or configuration details inline rather than omitting them.
 
 **How to detect which mode to use:**
 - Read the customer's column headers before writing. If there is only one response column (e.g., "Vendor Response", "Supporting Evidence", "Comments"), use the single-column format.
 - If the template has multiple response columns (e.g., "Answer" + "Notes" + "Compliance"), put the full answer in the Answer column; Notes is for supplementary caveats only.
-- When in doubt, default to a thorough answer — 4-12 sentences with full supporting detail.
+- When in doubt, default to a thorough answer per format-defaults.

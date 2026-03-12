@@ -44,7 +44,7 @@ Scan this before every drafting session. Full definitions are in the sections be
 
 Verify **every item** before drafting any answer. Do not skip this.
 
-- [ ] No Salesforce product names in customer text — use generic terms (see product-name table in Step 4)
+- [ ] No Salesforce product names in customer text — use generic terms (see product-name table below)
 - [ ] Score at highest defensible level — flag uncertainty in Review, not in the score
 - [ ] No confidence callouts, hedging, or "verify with account team" in customer text
 - [ ] No demo suggestions in review notes — state what needs verification, not what to demo
@@ -62,15 +62,9 @@ Verify **every item** before drafting any answer. Do not skip this.
 
 ## Workflow
 
-### Mode Selection
+### Orchestrator + Subagents
 
-| Question Count | Mode | Notes |
-|----------------|------|-------|
-| 1–9 | Standard | Answer in chat or write to sheet, 2–5 questions at a time |
-| 10–14 | Batch | All questions in a single session, grouped reference fetches |
-| 15+ | Parallel Agent | Automatic — do not ask the user. Distributes work across subagents |
-
-The user can override mode at any time. See [Batch Processing Mode](#batch-processing-mode) and [Parallel Agent Mode](#parallel-agent-mode) for details.
+Always use the orchestrator + subagent architecture. The orchestrator parses, classifies, detects format, groups questions, and spawns subagents to draft answers. Agent count is dynamic: 1 for small RFPs (1–9 questions), 2–10+ for large RFPs depending on question distribution. See [The Workflow](#the-workflow) for the full flow.
 
 ### Deal Context (Optional)
 
@@ -104,51 +98,22 @@ Map each question to one or more reference categories:
 
 Also flag each question as **competitive-sensitive** or **standard** using the classification guide in [competitive-positioning.md](reference/competitive-positioning.md). Competitive-sensitive questions get subtle positioning language woven into the answer.
 
-### Step 3: Fetch Live Reference Material
+### Step 3: Format Detection & Agent Assignment
 
-Each reference file contains two types of references organized by subtopic:
-- **Stable URLs** — from domains that rarely break (`trailhead.salesforce.com`, `developer.salesforce.com`, `trust.salesforce.com`, `architect.salesforce.com`, `salesforce.com` product pages). Fetch these directly.
-- **Search Queries** — curated search strings for `help.salesforce.com` content, which uses fragile article IDs that break when Salesforce reorganizes docs. Run these via `WebSearch` to discover current URLs.
+1. **Detect document format** — from the sheet when present (see [Document Format Detection](#document-format-detection)); when there is no sheet (pasted or Doc-only), use default format (single-answer, inline Sources).
+2. **Group questions** into agent assignments using [Dynamic Agent Sizing](#dynamic-agent-sizing) (merge small groups, split large ones, drop empty categories).
+3. **Determine agent count** — 1 for small RFPs, 2–10+ for large depending on distribution.
+4. **Present the summary table** with question #, category, agent assignment, and competitive flag. Wait for user approval before spawning agents.
 
-Follow this process:
+Subagents fetch their own reference material and URLs per the instructions in [templates/subagent-prompt.md](templates/subagent-prompt.md).
 
-1. Read **only** the reference files relevant to the current batch of questions.
-2. **Fetch stable URLs** using `WebFetch`. These reliably return content. Fetch in parallel where possible.
-3. **Run search queries** listed in the reference file using `WebSearch`. These return current `help.salesforce.com` article URLs for both content and citation. This replaces the old pattern of hardcoding help.salesforce.com URLs that frequently break.
-4. **Check Key Native Capabilities tables** in the relevant reference file as the authoritative floor for any capability claim. These tables are URL-independent and should never be contradicted, even when live documentation is unavailable.
+### Step 4: Spawn Subagents
 
-#### Why Search Queries Instead of Direct URLs
+The orchestrator builds each subagent's prompt from [templates/subagent-prompt.md](templates/subagent-prompt.md), fills the placeholders (`{{QUESTIONS}}`, `{{REFERENCE_FILES}}`, `{{TONE_CALIBRATION}}`, etc.), and spawns agents using the Task tool. Each subagent reads its assigned reference files, fetches URLs, and drafts answers. See [The Workflow](#the-workflow) for full Phase 3–5 details.
 
-`help.salesforce.com` uses JavaScript-heavy rendering that often times out for automated `WebFetch`, and Salesforce periodically restructures article IDs (e.g., the `sf.` to `data.` prefix migration). Storing search queries instead of brittle article IDs ensures the skill always finds current documentation and never cites dead links in customer-facing answers.
+Subagents apply the drafting rules (scoring strategy, accuracy guardrails, evidence framing, product names) defined in the subagent prompt. The orchestrator verifies collected results against the [Pre-Flight Checklist](#pre-flight-checklist) and fixes any violations before writing.
 
-#### Source Priority
-
-When gathering and citing references, follow this priority order:
-
-1. **Primary -- Official docs**: `help.salesforce.com` (discovered via search queries), `developer.salesforce.com/docs`, `trust.salesforce.com`, `architect.salesforce.com`, `trailhead.salesforce.com`. These are externally approved and publicly facing.
-2. **Secondary -- Blog posts**: `salesforce.com/blog`, `developer.salesforce.com/blogs`, `admin.salesforce.com/blog`. Acceptable as supplementary sources but never as the sole citation.
-3. **Fallback -- Ad-hoc WebSearch**: Use only when reference file stable URLs and search queries don't cover the topic.
-
-When listing sources in answers, always list official doc URLs first, blog links second.
-
-#### Product Priority
-
-When multiple Salesforce products can address a question, follow this priority order:
-
-1. **First -- Agentforce and Data 360.** If the capability exists in these products, lead with them.
-2. **Second -- Salesforce core platform:** Sales Cloud, Service Cloud, Experience Cloud, Platform (Flow, Apex, LWC).
-3. **Analytics -- Tableau Next** (built on Data 360). Prioritize over legacy Tableau or CRM Analytics for analytics-heavy questions.
-4. **Avoid -- Salesforce Industry products** (Health Cloud, Financial Services Cloud, etc.) unless the user explicitly asks about them.
-
-### Step 4: Draft Answers
-
-- Use the appropriate template from [templates/](templates/).
-- For individual Q&A or freeform responses, use [single-answer.md](templates/single-answer.md).
-- For spreadsheet / tabular RFP formats, use [spreadsheet-format.md](templates/spreadsheet-format.md).
-- Answer length and Sources are defined in [format-defaults.md](reference/format-defaults.md).
-- See [sample-qa.md](examples/sample-qa.md) for tone and style calibration.
-
-#### Scoring Strategy
+#### Scoring Strategy (applied by subagents)
 
 > **This is the single most important directive in this skill.** Internalize it before scoring a single question.
 
@@ -300,7 +265,7 @@ Every answer gets an internal review flag for team triage. These flags are **nev
 
 ## Document Format Detection
 
-Before drafting any answers, detect these FORMAT signals from the sheet. This is a mandatory pre-write step for every mode (Standard, Batch, Parallel Agent).
+Before spawning subagents, detect format signals. **When the source is a Google Sheet:** detect from the sheet (mandatory pre-write step). **When there is no sheet** (pasted questions in chat or Google Doc without a sheet), use default format: single-answer template, inline Sources per [format-defaults.md](reference/format-defaults.md).
 
 - **Column structure**: Read the header row to determine which columns hold ratings, answers, documentation URLs, and comments. Map answer fields to exact columns. Different tabs in the same RFP may use different column structures. For multi-tab sheets, follow the full discovery recipe in [google-workspace.md](reference/google-workspace.md).
 - **URL placement**: If the sheet has a dedicated documentation/URL column (e.g., "Salesforce Documentation"), put URLs there and do NOT add an inline `Sources:` block in the answer text. If no dedicated column exists, include `Sources:` inline per [format-defaults.md](reference/format-defaults.md).
@@ -316,7 +281,7 @@ Before drafting any answers, detect these FORMAT signals from the sheet. This is
 When the user returns to continue a previously started RFP (e.g., "some answers are still missing", "fill in the gaps"):
 
 1. **Read the current sheet state** before planning. Identify which cells already have answers and which are empty. Do not re-answer questions that already have responses unless the user explicitly asks for revisions.
-2. **Count the missing answers** and select the appropriate mode (Standard / Batch / Parallel Agent) based on the gap count, not the total RFP size.
+2. **Count the missing answers** — agent count is based on the gap count and question distribution, not the total RFP size.
 3. **Preserve existing Review tab entries.** Append new review flags after the last existing row.
 4. **Detect document format.** Read the sheet headers and 2-3 existing answers to detect column structure, URL placement, and scoring rubric (see Document Format Detection). Do NOT adapt writing tone or depth from existing answers — always follow the Tone & Style guidelines in this skill.
 
@@ -331,82 +296,9 @@ If a question falls outside the reference URLs:
 
 For reading from and writing to Google Sheets and Google Docs, see [google-workspace.md](reference/google-workspace.md).
 
-## Batch Processing Mode
+## The Workflow
 
-For medium-sized RFPs (10–14 questions), use batch mode to process the entire RFP in a single session instead of answering 2–5 questions at a time. For 15+ questions, use [Parallel Agent Mode](#parallel-agent-mode) instead.
-
-### When to Use Batch Mode
-
-- The user provides 10–14 RFP questions at once
-- The user explicitly requests "batch mode" or "process all questions"
-- The RFP is in a Google Sheet with many rows to answer (and fewer than 15 questions)
-
-### Batch Workflow
-
-#### Phase 1: Categorize & Plan
-
-1. Parse all questions (Step 1).
-2. Classify every question by reference category and competitive sensitivity (Step 2).
-3. Group questions by category to minimize redundant URL fetches — questions in the same category share reference material.
-4. Present a **summary table** for quick team review before drafting:
-
-```markdown
-| # | Question (short) | Category | Competitive? | Review Flag |
-|---|-----------------|----------|-------------|-------------|
-| 1 | Data encryption at rest | Security | No | Auto-approved |
-| 2 | Real-time streaming latency | Data 360 | Yes | SME Review |
-| 3 | GDPR compliance status | Data & Privacy | No | Legal Review |
-| ... | ... | ... | ... | ... |
-```
-
-5. Wait for the user to review and approve the plan (or adjust scores/flags) before proceeding to Phase 2.
-
-#### Phase 2: Fetch References (Grouped)
-
-1. Read reference files grouped by category — fetch each reference file once, even if multiple questions use it.
-2. Fetch URLs in parallel across categories where possible.
-3. For competitive-sensitive questions, also read [competitive-positioning.md](reference/competitive-positioning.md).
-
-#### Phase 3: Preview Sample Answers
-
-Before drafting all answers, give the user a chance to calibrate tone, depth, and style:
-
-1. Select 2-3 representative questions from each major section (prioritize competitive-sensitive or high-weight questions).
-2. Draft full answers for only these sample questions, following the answer length from [format-defaults.md](reference/format-defaults.md) (4-12 sentences).
-3. Present the samples to the user grouped by section and ask: *"Here are sample answers for each section. Are the tone, depth, and level of detail what you're looking for, or would you like me to adjust before I draft the rest?"*
-4. Incorporate any feedback (e.g., "more technical", "shorter", "add more sources", "too generic") before proceeding.
-5. If the user is satisfied or explicitly says to proceed, move to Phase 4.
-
-#### Phase 4: Draft All Answers
-
-1. Draft all answers in a single pass, maintaining consistent tone and positioning across the full response set.
-2. Apply the tone and depth calibrated during the Phase 3 preview.
-3. Assign review flags to every answer (Step 5).
-
-#### Phase 5: Write All Answers
-
-1. **Source preservation rule (MANDATORY):** Source handling depends on the sheet's URL placement mode:
-   - **Inline mode (default — no dedicated URL column):** Every answer cell MUST include the `Sources:` block at the end. Do not strip, truncate, or separate sources from the answer text.
-   - **Separate column mode (sheet has a dedicated URL column):** Write the answer text WITHOUT a `Sources:` block. Write the source URLs to the designated URL column in the same row.
-2. **Column detection (before writing):** Read the header row of each target tab to determine which columns to write to. Different tabs may use different column structures. Map question numbers to exact sheet row numbers using the question-to-row mapping built from the sheet (see Document Format Detection). Do not assume row N = question N — use the persisted mapping.
-3. After drafting, write all answers using `sheets_batch_update_values`. For 10+ answers, split into chunks of 25-40 rows per API call to avoid payload limits.
-4. Write review flags to the "Review" tab. Create it with `sheets_insert_sheet` if it doesn't exist. If it already has entries, use `sheets_append_values` with `insertDataOption: "INSERT_ROWS"` to add new entries.
-5. Inform the user that answers are written and ready for review in the sheet.
-
-## Parallel Agent Mode
-
-For large RFPs where context window limits are a concern, use **parallel agent mode** to distribute work across multiple subagents. Each subagent handles a subset of questions grouped by reference category, keeping its context small and focused.
-
-### When to Use Parallel Agent Mode
-
-Use parallel agent mode when **any** of these are true:
-
-- The RFP has **15+ questions** (automatic — do not ask the user)
-- The user explicitly requests "parallel mode", "use agents", or "split it up"
-- The source document (Google Sheet, Doc, or pasted text) is large enough that processing everything in one context window would degrade answer quality
-- A previous attempt in standard/batch mode ran into context limits or degraded quality toward the end
-
-When parallel agent mode applies, **use it by default** — do not ask the user for permission. If the user prefers single-context processing, they can say so.
+Always use this workflow for RFP questions. The orchestrator parses, classifies, groups, detects format, and spawns subagents to draft. Subagents fetch reference material, draft answers, and return structured results. The orchestrator collects, verifies, and writes to the sheet.
 
 ### Architecture Overview
 
@@ -428,18 +320,18 @@ When parallel agent mode applies, **use it by default** — do not ask the user 
      │ Agent 1 │ │ Agent 2 │   │ Agent N │
      │ (topic) │ │ (topic) │   │ (topic) │
      └─────────┘ └─────────┘   └─────────┘
-           N = 2–10, driven by question distribution
+           N = 1–10+, driven by question distribution
 ```
 
 - **Orchestrator** (main agent): Handles parsing, classification, grouping, approval flow, subagent dispatch, result collection, and Google Sheets I/O.
 - **Subagents**: Each answers a batch of questions for 1-2 related categories. Each subagent reads only the reference files it needs, fetches only the URLs relevant to its questions, and drafts answers. It returns structured results back to the orchestrator.
 - **Agent count is dynamic** — determined by how questions actually cluster across categories, not a fixed number. See [Dynamic Agent Sizing](#dynamic-agent-sizing) below.
 
-### Parallel Agent Workflow
+### Workflow Phases
 
 #### Phase 1: Parse & Classify (Orchestrator)
 
-Same as Batch Mode Phase 1. The orchestrator:
+The orchestrator:
 
 1. Parses all questions from the source.
 2. Classifies each question by reference category.
@@ -466,7 +358,7 @@ In this example, APIs (1 Q) merges into Data 360 and Support (1 Q) merges into I
 #### Phase 2: Format Detection (Required)
 
 1. Read the sheet headers and 2-3 existing answers to detect format signals: column structure, URL placement, and scoring rubric (see Document Format Detection). Do NOT extract writing tone or depth from existing answers.
-2. If this is the first batch for this deal and the user hasn't given explicit style instructions: optionally draft 2-3 sample answers for the user to confirm depth/style preferences.
+2. If this is the first batch for this deal and the user hasn't given explicit style instructions: optionally draft 2-3 sample answers for the user to confirm depth/style preferences. See [sample-qa.md](examples/sample-qa.md) for tone and style examples.
 3. If the user has given explicit instructions (e.g., "concise mode", "use product names"): apply those as overrides.
 4. Pass format signals to subagents via `{{TONE_CALIBRATION}}`. Tone and depth always come from the skill's built-in Tone & Style section — never from existing answers.
 
@@ -553,7 +445,9 @@ After classifying all questions (Phase 1), tally how many questions fall into ea
 
 #### Step 2: Merge small groups
 
-Merge any category with fewer than 3 questions into the nearest related category using these affinities:
+**For RFPs with fewer than 3 questions total:** merge all into a single agent.
+
+**For RFPs with 3+ questions:** merge any category with fewer than 3 questions into the nearest related category using these affinities:
 
 | Category | Merges into |
 |----------|------------|
@@ -562,7 +456,7 @@ Merge any category with fewer than 3 questions into the nearest related category
 | Integrations & APIs | Platform & Product |
 | Competitive Positioning | whichever category the competitive questions belong to |
 
-After merging, each group should have at least 3 questions.
+After merging, each group should have at least 3 questions (or 1 group if there are fewer than 3 questions total).
 
 #### Step 3: Split large groups
 
@@ -578,6 +472,7 @@ The number of non-empty groups after merging and splitting is the agent count. T
 
 | RFP Size | Question Distribution | Agent Count | Why |
 |----------|----------------------|-------------|-----|
+| 3 Qs | 1 Security, 1 Data 360, 1 Platform | 1 | All merge into 1 agent for small RFPs |
 | 15 Qs | 8 Data 360, 5 Security/Privacy, 2 Platform | 2 | Platform (2 Qs) merges into Data 360 → 10 + 5 = 2 agents |
 | 20 Qs | 7 Security, 6 Data 360, 4 Platform, 3 Infra | 4 | Each category has 3+ questions → 4 agents |
 | 25 Qs | 12 Data 360, 8 Security, 3 APIs, 2 Support | 3 | APIs merges into nearest (Platform/Data 360), Support merges into Infra (dropped — 0 Qs) then Security → 3 agents |
@@ -608,17 +503,17 @@ Some questions span multiple categories (e.g., "How does your CDP handle GDPR co
 - If a subagent fails or returns incomplete results, **do not re-run the entire batch**. Resume the failed agent with a follow-up message, or spawn a new agent for only the missing questions.
 - If a subagent returns answers that violate the pre-flight checklist (e.g., product names in customer-facing text, hedging language), fix them in the orchestrator before writing to the sheet.
 
-### Mode Comparison
+### Agent Count by Question Count
 
-| Aspect | Standard | Batch | Parallel Agent |
-|--------|----------|-------|---------------|
-| Questions per round | 2-5 | All | All |
-| Context per agent | Full RFP | Full RFP | ~20-25 Qs per agent |
-| Concurrent processing | No | No | Up to 4 agents per wave |
-| Total agents | 1 | 1 | 2-10+ (dynamic, based on question distribution) |
-| Reference fetches | May re-fetch | Grouped, 1 context | Grouped, separate contexts |
-| Best for | Small RFPs (1-9 Qs) | Medium RFPs (10-14 Qs) | Large RFPs (15+ Qs) |
-| Context window risk | Low | Medium for 12+ Qs | Low (distributed) |
+| Question Count | Typical Agent Count | Notes |
+|----------------|---------------------|-------|
+| 1-9 | 1 | All questions in one subagent |
+| 10-14 | 1-2 | Merged by category; may split if distribution warrants |
+| 15+ | 2-10+ | Dynamic; merge small groups, split large ones; cap each agent at ~20-25 Qs |
+| 50+ | 4-8 | Split large categories into subcategories |
+| 100+ | 6-10 (waves of 4) | Task tool limits to 4 concurrent agents per wave |
+
+**Context:** Each subagent handles ~20-25 questions. Reference fetches are per-agent. Orchestrator collects and writes.
 
 ## Maintaining the Reference Library
 
