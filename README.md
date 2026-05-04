@@ -93,6 +93,19 @@ Sheets-only. Requires a Google Cloud service account and JSON key. See https://g
 
 `scripts/` (deal-specific runtime scripts with customer names and sheet IDs) is gitignored. The skill runs fine without them.
 
+## Do I need any API keys?
+
+**To install and use the skill:** no. The skill fetches public Salesforce documentation — no auth needed.
+
+**For your agent runtime:** your existing Claude Code or Cursor subscription. Nothing new.
+
+**Only if you install the Google Workspace MCP:**
+
+- `google-adc` (recommended) — uses your own `gcloud auth application-default login` (personal Google OAuth). Requires a GCP project ID for quota/billing. Pick any GCP project you have access to.
+- `mcp-gsheets` (fallback) — requires a Google Cloud service account JSON key that you generate yourself, plus sharing the target Sheet with that service account's email.
+
+Nothing in this repo references anyone else's keys. You bring your own Google creds if you want Sheets I/O; everything else works key-free.
+
 ## Troubleshooting
 
 **Skill doesn't trigger.** Confirm the clone landed in the right place: `ls ~/.claude/skills/rfp-answering/SKILL.md` (or `~/.cursor/skills/...`). Restart the runtime after cloning.
