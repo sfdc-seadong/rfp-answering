@@ -4,19 +4,31 @@ Claude Code skill for answering Salesforce RFPs, RFIs, and vendor questionnaires
 
 ## Install
 
-Clone into your Claude Code skills directory:
+Clone into your agent runtime's skills directory:
 
 ```
+# Claude Code
 git clone https://github.com/sfdc-seadong/rfp-answering ~/.claude/skills/rfp-answering
+
+# Cursor
+git clone https://github.com/sfdc-seadong/rfp-answering ~/.cursor/skills/rfp-answering
 ```
 
-Claude Code auto-discovers skills under `~/.claude/skills/`. The skill is active in your next session.
+The skill is active in your next session.
 
 ## Prerequisites
 
-### Claude Code
+### Runtime
 
-This skill requires Claude Code (the CLI), not Claude.ai. The orchestrator + subagent workflow uses the `Task` tool, and reference fetching uses `WebFetch` and `WebSearch`. All three must be enabled in your harness.
+Works in Claude Code, Cursor Composer, or any agent runtime that supports:
+
+- **Skill auto-discovery** from a skills directory (`~/.claude/skills/` for Claude Code, `~/.cursor/skills/` for Cursor).
+- **Subagent / task dispatch** — the orchestrator spawns subagents per topic cluster.
+- **Web fetch and search** — subagents pull live Salesforce documentation.
+
+Tool names differ per runtime (`Task` / `WebFetch` / `WebSearch` in Claude Code; equivalents in Cursor). The skill instructions translate across runtimes.
+
+Does NOT work on Claude.ai (web) — no skill discovery, no subagents.
 
 ### Google Workspace MCP (optional)
 
