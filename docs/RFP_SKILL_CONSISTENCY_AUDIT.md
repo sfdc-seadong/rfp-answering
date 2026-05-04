@@ -8,7 +8,7 @@ Review of all skill files for inconsistencies, conflicting instructions, and gap
 
 ## 1. Pasted/Chat-Only Flow — No Sheet Guidance
 
-**Location:** [SKILL.md](SKILL.md) Step 3, Document Format Detection, [reference/google-workspace.md](reference/google-workspace.md)
+**Location:** [SKILL.md](../SKILL.md) Step 3, Document Format Detection, [reference/google-workspace.md](../reference/google-workspace.md)
 
 **Issue:** The workflow assumes a Google Sheet. Step 3 says "Detect document format **from the sheet**" and Document Format Detection says "detect these FORMAT signals **from the sheet**." When the user pastes questions in chat or provides a Google Doc without a sheet, there is no sheet to read.
 
@@ -18,7 +18,7 @@ Review of all skill files for inconsistencies, conflicting instructions, and gap
 
 ## 2. single-answer.md — "Product Names" in Format Placeholder
 
-**Location:** [templates/single-answer.md](templates/single-answer.md) line 16
+**Location:** [templates/single-answer.md](../templates/single-answer.md) line 16
 
 **Issue:** The format placeholder says "Supporting paragraph with specifics, certifications, **product names**, or metrics." The default rule is NO Salesforce product names in customer-facing text. Including "product names" in the placeholder could be read as "include product names."
 
@@ -28,7 +28,7 @@ Review of all skill files for inconsistencies, conflicting instructions, and gap
 
 ## 3. spreadsheet-format.md — Sources Block Rule vs. Separate Column Mode
 
-**Location:** [templates/spreadsheet-format.md](templates/spreadsheet-format.md) line 17
+**Location:** [templates/spreadsheet-format.md](../templates/spreadsheet-format.md) line 17
 
 **Issue:** The Answer column definition says "**Must end with a `Sources:` block**" but format-defaults and SKILL say to omit inline Sources when the sheet has a dedicated URL column. The template does not distinguish inline vs. separate-column mode.
 
@@ -38,7 +38,7 @@ Review of all skill files for inconsistencies, conflicting instructions, and gap
 
 ## 4. Architecture Diagram — Agent Count Range
 
-**Location:** [SKILL.md](SKILL.md) architecture diagram, line 287
+**Location:** [SKILL.md](../SKILL.md) architecture diagram, line 287
 
 **Issue:** The diagram says "N = 2–10, driven by question distribution" but the Agent Count table says 1–9 questions → 1 agent. So N can be 1 for small RFPs.
 
@@ -48,7 +48,7 @@ Review of all skill files for inconsistencies, conflicting instructions, and gap
 
 ## 5. Dynamic Agent Sizing — Merge Rule for Small RFPs
 
-**Location:** [SKILL.md](SKILL.md) Dynamic Agent Sizing, Step 2, lines 411–422
+**Location:** [SKILL.md](../SKILL.md) Dynamic Agent Sizing, Step 2, lines 411–422
 
 **Issue:** The merge rule says "Merge any category with fewer than 3 questions into the nearest related category" and "After merging, each group should have at least 3 questions." The affinity table only covers Data & Privacy, Support, Integrations, and Competitive Positioning. For 3 questions in 3 different categories (e.g., 1 Security, 1 Data 360, 1 Platform), there is no explicit merge path—Data 360 and Platform are not in the "Merges into" column. The sizing example says "3 Qs → 1 agent" but the rules do not spell out how to get there.
 
@@ -58,7 +58,7 @@ Review of all skill files for inconsistencies, conflicting instructions, and gap
 
 ## 6. Persona — "Every Answer You Write"
 
-**Location:** [SKILL.md](SKILL.md) Persona, line 10
+**Location:** [SKILL.md](../SKILL.md) Persona, line 10
 
 **Issue:** Persona says "Every answer **you write** positions the Salesforce platform..." The orchestrator does not write answers; subagents do. The "you" (orchestrator) coordinates but does not draft.
 
@@ -68,7 +68,7 @@ Review of all skill files for inconsistencies, conflicting instructions, and gap
 
 ## 7. Subagent-Prompt — "Existing Answers in the Sheet"
 
-**Location:** [templates/subagent-prompt.md](templates/subagent-prompt.md) line 174
+**Location:** [templates/subagent-prompt.md](../templates/subagent-prompt.md) line 174
 
 **Issue:** "Do NOT infer tone from any existing answers in the sheet — those are for format detection only." Subagents do not have sheet access, so they would not see existing answers. The text may be legacy from when the main agent drafted.
 
@@ -78,7 +78,7 @@ Review of all skill files for inconsistencies, conflicting instructions, and gap
 
 ## 8. Step 3 vs. Workflow Phase Order
 
-**Location:** [SKILL.md](SKILL.md) Step 3 vs. The Workflow Phases 1–2
+**Location:** [SKILL.md](../SKILL.md) Step 3 vs. The Workflow Phases 1–2
 
 **Issue:** Step 3 lists "Detect document format" as item 1, then grouping, agent count, present table. The Workflow has Phase 1 (parse, classify, group, present, approve) and Phase 2 (format detection). So format detection is in Phase 2, after grouping. Step 3 can be read as "format first, then group," which does not match the phase order. Functionally fine—format is done before spawning—but the ordering differs.
 
@@ -88,7 +88,7 @@ Review of all skill files for inconsistencies, conflicting instructions, and gap
 
 ## 9. sample-qa.md — Orphaned Reference
 
-**Location:** [examples/sample-qa.md](examples/sample-qa.md)
+**Location:** [examples/sample-qa.md](../examples/sample-qa.md)
 
 **Issue:** sample-qa.md is not referenced in SKILL.md. The old Step 4 (Draft Answers) used to say "See sample-qa.md for tone and style calibration." After refactoring to Step 4 = Spawn Subagents, that reference was dropped. Phase 2 has an optional "draft 2–3 sample answers" step; the orchestrator could use sample-qa when doing that, but SKILL does not point to it.
 
@@ -98,7 +98,7 @@ Review of all skill files for inconsistencies, conflicting instructions, and gap
 
 ## 10. Quick Reference / Pre-Flight — Hardcoded Numbers
 
-**Location:** [SKILL.md](SKILL.md) Quick Reference (lines 37–38), Pre-Flight Checklist (lines 59–60)
+**Location:** [SKILL.md](../SKILL.md) Quick Reference (lines 37–38), Pre-Flight Checklist (lines 59–60)
 
 **Issue:** Quick Reference and Pre-Flight repeat "4-12 sentences" and "1-3 URLs" even though format-defaults is the source of truth. Templates were updated to defer to format-defaults, but SKILL still inlines the numbers. Low risk of drift, but not strictly single-source.
 
@@ -108,7 +108,7 @@ Review of all skill files for inconsistencies, conflicting instructions, and gap
 
 ## 11. Subagent Return Format — Sources Style
 
-**Location:** [templates/subagent-prompt.md](templates/subagent-prompt.md) lines 198–202
+**Location:** [templates/subagent-prompt.md](../templates/subagent-prompt.md) lines 198–202
 
 **Issue:** The Return Format example shows plain "Sources:" followed by URLs, while format-defaults says chat should use "**Sources:**" (bold) and a bullet list. Subagents may return plain text; the orchestrator could format for chat output. If so, this is intentional and OK.
 
