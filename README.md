@@ -16,10 +16,45 @@ Claude Code auto-discovers skills under `~/.claude/skills/`. The skill is active
 
 Drafting works out of the box. Reading from / writing to Google Sheets and Docs requires Google MCP servers:
 
-- `mcp__google-adc__*` — Google Workspace tools (Sheets, Docs, Drive). Preferred.
-- `mcp__mcp-gsheets__*` — fallback Sheets tools.
+- `mcp__google-adc__*` — Google Workspace tools (Sheets, Docs, Drive, Gmail, Calendar). Preferred.
+- `mcp__mcp-gsheets__*` — fallback Sheets-only tools.
 
-Install one or both before running on a Google-hosted RFP. Without them, the skill still drafts answers; you copy them into the sheet manually.
+Without these, the skill still drafts answers; you copy them into the sheet manually.
+
+### Install `google-adc` MCP
+
+This is the recommended MCP server for Google Workspace access. It authenticates via Application Default Credentials (reusing gcloud's built-in OAuth client), so it works inside Workspace orgs that restrict third-party OAuth apps.
+
+Prereqs:
+
+- `gcloud` CLI — https://cloud.google.com/sdk/docs/install
+- `uv` — https://docs.astral.sh/uv/getting-started/installation/
+
+Install:
+
+```
+git clone https://github.com/smian1/google-adc-mcp.git ~/google-mcp
+cd ~/google-mcp
+./setup-google-adc.sh
+```
+
+The setup script runs `gcloud auth application-default login`, pins a quota project, and configures scopes.
+
+Register with Claude Code — add to `~/.claude.json` under `mcpServers`:
+
+```json
+"google-adc": {
+  "command": "uv",
+  "args": ["run", "--script", "/Users/<you>/google-mcp/server.py"],
+  "env": {
+    "GOOGLE_ADC_QUOTA_PROJECT": "<your-gcp-quota-project>"
+  }
+}
+```
+
+Restart Claude Code. The `mcp__google-adc__*` tools appear in the tool list.
+
+Gotcha: re-running `gcloud auth application-default login` wipes the quota project. If auth stops working, re-run `./setup-google-adc.sh`.
 
 ## Usage
 
