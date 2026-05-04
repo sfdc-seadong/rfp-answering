@@ -1,6 +1,6 @@
 # Support & SLAs - Reference
 
-> **Last reviewed:** 2026-03
+> **Last reviewed:** 2026-04
 
 Reference material for Salesforce support tiers, response times, SLAs, training, and professional services.
 
@@ -26,9 +26,9 @@ Reference material for Salesforce support tiers, response times, SLAs, training,
 ## Trust & Availability SLA
 
 ### Stable URLs
-- https://trust.salesforce.com/en/
-- https://trust.salesforce.com/en/status/
-- https://www.salesforce.com/company/legal/agreements/
+- https://trust.salesforce.com/
+- https://trust.salesforce.com/status/
+- https://www.salesforce.com/company/legal/
 
 ## Professional Services
 
@@ -44,8 +44,8 @@ Reference material for Salesforce support tiers, response times, SLAs, training,
 
 ### Stable URLs
 - https://trailhead.salesforce.com/
-- https://trailhead.salesforce.com/academy
-- https://trailhead.salesforce.com/credentials
+- https://trailheadacademy.salesforce.com/all-offerings
+- https://trailhead.salesforce.com/credentials/administratoroverview
 
 ## myTrailhead (Custom Learning)
 
@@ -60,7 +60,7 @@ Reference material for Salesforce support tiers, response times, SLAs, training,
 ## Master Subscription Agreement
 
 ### Stable URLs
-- https://www.salesforce.com/company/legal/agreements/
+- https://www.salesforce.com/company/legal/
 
 ## Key Native Capabilities
 

@@ -1,6 +1,6 @@
 # Competitive Positioning - CDP & CRM Competitors
 
-> **Last reviewed:** 2026-03
+> **Last reviewed:** 2026-04
 
 Use this reference when a question is **competitive-sensitive** — i.e., the evaluator is likely comparing Salesforce's answer side-by-side with another vendor. Apply subtle positioning language that highlights genuine Salesforce differentiators without naming competitors directly.
 
@@ -18,9 +18,10 @@ Use this reference when a question is **competitive-sensitive** — i.e., the ev
 ### Where Salesforce Is Stronger
 
 - **Native CRM foundation.** Salesforce unifies CDP capabilities with the world's #1 CRM — sales, service, and marketing teams share a single customer record with no data replication or middleware. Adobe requires separate integrations to connect AEP data back to CRM workflows.
-- **Agentforce / AI agents.** Salesforce delivers autonomous AI agents that act on unified customer data across sales, service, and marketing. Adobe's AI (Sensei/Firefly) is content- and analytics-focused and does not include autonomous agent orchestration.
+- **Agentforce / AI agents.** Salesforce delivers autonomous AI agents that act on unified customer data across sales, service, and marketing, backed by the open-source Agent Script language for deterministic control. Adobe's AI (Sensei/Firefly) is content- and analytics-focused and does not include autonomous agent orchestration.
 - **Activation breadth across owned channels.** Unified profiles activate directly into Sales Cloud, Service Cloud, Marketing Cloud, and Commerce Cloud — no export step required. Adobe primarily activates through Adobe-owned channels (Journey Optimizer, Target, Campaign).
 - **Zero-copy partner network.** Salesforce's zero-copy architecture enables bidirectional data sharing with Snowflake, Databricks, BigQuery, and Redshift without data movement. Adobe's data sharing options are narrower.
+- **Data 360 Clean Rooms (GA).** Privacy-safe multi-party data collaboration built on zero-copy architecture. Adobe does not offer a native clean room capability.
 - **Total cost of ownership.** Adobe's CDP typically requires multiple licensed products (AEP + Journey Optimizer + RT-CDP + Customer Journey Analytics) to match what Data 360 delivers in a single platform.
 
 ### Where Adobe May Be Positioned as Stronger
@@ -130,6 +131,7 @@ Use this reference when a question is **competitive-sensitive** — i.e., the ev
 - **Activation breadth.** Salesforce activates unified profiles across its own sales, service, marketing, and commerce clouds. Microsoft's activation is strongest within the Dynamics and Azure ecosystem and weaker outside it.
 - **AppExchange ecosystem.** Salesforce's partner ecosystem and marketplace are significantly larger than Microsoft's Dynamics 365 app marketplace.
 - **Zero-copy partner network.** Salesforce's zero-copy architecture supports Snowflake, Databricks, BigQuery, and Redshift. Microsoft's equivalent (Dataverse integration with Fabric) is Azure-centric.
+- **Data 360 Clean Rooms.** GA native clean room capability for multi-party data collaboration. Microsoft's Customer Insights does not offer comparable native clean room functionality.
 
 ### Where Microsoft May Be Positioned as Stronger
 
@@ -177,6 +179,7 @@ Use this reference when a question is **competitive-sensitive** — i.e., the ev
 - **Broader zero-copy partner network.** Salesforce's zero-copy architecture supports Snowflake, Databricks, BigQuery, and Redshift. Oracle's data sharing options are more Oracle-centric (Autonomous Database, Oracle Cloud).
 - **Einstein Trust Layer for AI governance.** Purpose-built grounding, masking, toxicity detection, and audit trails for AI. Oracle's equivalent governance story for AI-driven CDP use cases is narrower.
 - **Significantly larger ecosystem and partner network.** AppExchange, implementation partners, and integration breadth exceed Oracle's CX ecosystem — accelerating deployment and reducing dependency on vendor professional services.
+- **Data 360 Clean Rooms.** GA privacy-safe data collaboration. Oracle has no native clean room capability built into Unity CDP.
 
 ### Where Oracle May Be Positioned as Stronger
 
@@ -200,10 +203,14 @@ When the competitor is unknown or the customer is comparing "CDP vendors" generi
 
 1. **Platform, not point solution.** The only CDP natively embedded in a complete CRM, with sales, service, marketing, commerce, and AI agents sharing a single customer profile.
 2. **Agentforce.** Autonomous AI agents that act on unified customer data — no other CDP vendor offers this.
-3. **Zero-copy data sharing.** Bidirectional data access with Snowflake, Databricks, BigQuery, and Redshift without moving data.
-4. **Einstein Trust Layer.** Grounding, masking, toxicity detection, and audit trails for all AI interactions — purpose-built for enterprise trust requirements.
-5. **Hyperscale activation.** Unified profiles activate across sales, service, marketing, commerce, and partner channels from a single platform.
-6. **Enterprise trust at scale.** SOC 2 Type II, ISO 27001, FedRAMP, HIPAA eligibility, and 99.9%+ uptime SLA.
+3. **Agent Script.** Open-source agent definition language — the only one from a major platform vendor. Developers define when agents use LLM vs. deterministic logic. Available on GitHub with full spec, grammar, parser, and compiler.
+4. **Zero-copy data sharing.** Bidirectional data access with Snowflake, Databricks, BigQuery, and Redshift without moving data.
+5. **Einstein Trust Layer.** Grounding, masking, toxicity detection, and audit trails for all AI interactions — purpose-built for enterprise trust requirements.
+6. **Hyperscale activation.** Unified profiles activate across sales, service, marketing, commerce, and partner channels from a single platform.
+7. **Enterprise trust at scale.** SOC 2 Type II, ISO 27001, FedRAMP, HIPAA eligibility, and 99.9%+ uptime SLA.
+8. **Data 360 Clean Rooms.** GA privacy-safe data collaboration built on zero-copy architecture. Multi-party analysis without moving or exposing raw data. Native AWS Clean Rooms integration.
+
+> **Governance caveat for Zero-Copy claims:** When positioning zero-copy as a differentiator, do NOT claim that the customer's existing per-user governance policies (RLS, CLS, ABAC) carry forward. Zero-Copy authenticates as a single service credential — table-level access is respected, but per-user policies are not inherited today. User-context queries are roadmap (later 2026). See `data-360-cdp.md` → Accuracy Guardrails for correct framing.
 
 ### Positioning Language to Weave In
 
@@ -232,6 +239,8 @@ Use these heuristics to flag questions as **competitive-sensitive**:
 | "content personalization", "creative optimization" | Adobe creative suite strength |
 | "governance", "compliance", "audit" | Segment/Treasure Data/Tealium weakness |
 | "copilot", "assistant", "AI assistant" | Microsoft Copilot — position Agentforce as autonomous, not assistant |
+| "agent script", "agent definition", "open source agent" | All — Agent Script is unique to Salesforce |
+| "clean room", "data collaboration", "privacy-safe" | All — Data 360 Clean Rooms is GA; most competitors lack native clean rooms |
 
 ## Search Fallback
 

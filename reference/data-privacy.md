@@ -1,30 +1,29 @@
 # Data & Privacy - Reference
 
-> **Last reviewed:** 2026-03
+> **Last reviewed:** 2026-04
 
 Reference material for Salesforce data privacy, GDPR, CCPA, data residency, retention, DPAs, and sub-processors.
 
 ## Privacy Overview
 
 ### Stable URLs
-- https://www.salesforce.com/company/privacy/
-- https://www.salesforce.com/company/privacy/full_privacy/
+- https://www.salesforce.com/company/legal/privacy/
+- https://www.salesforce.com/company/legal/privacy/full_privacy/
 
 ## Data Processing Addendum (DPA)
 
 ### Stable URLs
-- https://www.salesforce.com/content/dam/web/en_us/www/documents/legal/misc/data-processing-addendum.pdf
-- https://www.salesforce.com/company/privacy/
+- https://www.salesforce.com/company/legal/privacy/
 
 ## Sub-Processors
 
-### Stable URLs
-- https://www.salesforce.com/content/dam/web/en_us/www/documents/legal/misc/salesforce-subprocessors.pdf
+### Search Queries
+- "Salesforce sub-processors list site:salesforce.com"
 
 ## GDPR
 
 ### Stable URLs
-- https://www.salesforce.com/gdpr/overview/
+- https://www.salesforce.com/privacy/overview/
 
 ### Search Queries
 - "data protection privacy GDPR site:help.salesforce.com"
@@ -32,12 +31,12 @@ Reference material for Salesforce data privacy, GDPR, CCPA, data residency, rete
 ## CCPA / CPRA
 
 ### Stable URLs
-- https://www.salesforce.com/company/privacy/ccpa/
+- https://www.salesforce.com/privacy/overview/
 
 ## Data Residency & Hyperforce
 
 ### Stable URLs
-- https://www.salesforce.com/hyperforce/
+- https://www.salesforce.com/platform/public-cloud-infrastructure/
 
 ### Search Queries
 - "Hyperforce overview data residency site:help.salesforce.com"
@@ -70,23 +69,18 @@ Reference material for Salesforce data privacy, GDPR, CCPA, data residency, rete
 ## Binding Corporate Rules (BCRs)
 
 ### Stable URLs
-- https://www.salesforce.com/company/privacy/
+- https://www.salesforce.com/company/legal/privacy/
 
 ## Trust & Compliance Documentation
 
 ### Stable URLs
-- https://trust.salesforce.com/en/trust-and-compliance-documentation/
+- https://www.salesforce.com/company/legal/trust-and-compliance-documentation/
 - https://compliance.salesforce.com/en
 
 ## Consent Management
 
 ### Search Queries
 - "Individual object consent management site:help.salesforce.com"
-
-## Backup & Recovery
-
-### Stable URLs
-- https://www.salesforce.com/products/backup-recovery/
 
 ## Key Native Capabilities
 

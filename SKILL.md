@@ -37,7 +37,7 @@ Scan this before every drafting session. Full definitions are in the sections be
 | Review flags | Auto-approved (GA + official docs) · SME Review (beta, benchmarks, competitive) · Legal Review (certs, compliance, SLAs) |
 | Answer length | See [format-defaults.md](reference/format-defaults.md). 4-12 sentences. |
 | Sources | See [format-defaults.md](reference/format-defaults.md). 1-3 URLs, official docs first, blogs second. |
-| Accuracy | "Supported when configured" ≠ "enabled by default." Shield features are paid add-ons. |
+| Accuracy | "Supported when configured" ≠ "enabled by default." Shield features are paid add-ons. Service-credential integrations do NOT inherit per-user governance. |
 | Sentence variety | Vary openings across the batch — no repeated "The platform..." pattern. |
 
 ## Pre-Flight Checklist
@@ -57,6 +57,7 @@ Verify **every item** before drafting any answer. Do not skip this.
 - [ ] Telephony behaviors (recording, storage, transcription) belong to the telephony provider layer, not the platform
 - [ ] Recording storage region is determined by telephony provider config, not org region
 - [ ] Legal hold covers platform-resident data only — external storage needs separate retention
+- [ ] External integration governance claims (Zero-Copy, data shares, connectors) do NOT overclaim per-user RLS/CLS/ABAC inheritance — see Accuracy Guardrails
 - [ ] Every answer includes Sources (1-3 URLs per format-defaults)
 - [ ] Answer length 4-12 sentences — or 2-3 in concise mode (see [format-defaults.md](reference/format-defaults.md))
 
@@ -140,6 +141,7 @@ The goal is to **win the RFP**. If a capability can be achieved on the platform 
 | **Conflating adjacent features** | Describing frequency optimization (EEF) as "message prioritization" | These are different capabilities. EEF determines *whether* to send (saturation); prioritization determines *which* message to send when multiple compete. Use precise language that matches what the feature actually does. |
 | **Describing manual processes as automated** | Writing "the platform automatically surfaces all downstream consumers of a field" when an admin must manually navigate the lineage graph | If it requires clicking through multiple screens to piece together the answer, describe it as "supported with manual navigation," not "automated." |
 | **Composing a workflow and calling it native** | Combining segment exclusion + frequency caps + custom Flow logic and describing the result as "native cross-journey arbitration" | If achieving the outcome requires the customer to design and build a multi-component workflow, score 3-4 ("achievable with configuration"), not 5 ("fully supported out of the box"). |
+| **Overclaiming governance inheritance on external integrations** | Stating "Zero-Copy respects Unity Catalog's column-level access controls", "existing governance policies carry forward", or "data shares inherit GDPR enforcement" | Data Cloud authenticates to external platforms as a single service credential, not per end user. Per-user RLS/CLS/ABAC is NOT inherited — only table/schema-level access scoped to the service credential is respected. Applies to Zero-Copy, data shares, and external connectors. See `data-360-cdp.md` Accuracy Guardrails. |
 
 ##### Defensibility Test
 
@@ -170,6 +172,7 @@ These rules prevent common factual errors. They supplement the scoring strategy 
 - **Add-on vs. included.** Shield Platform Encryption, Event Monitoring, and Field Audit Trail are paid add-ons (Salesforce Shield). Do not describe them as included-by-default capabilities. Use "available as an add-on" or "with enhanced security licensing."
 - **Data residency for recordings.** Recording storage region is determined by the telephony provider's instance configuration, not the platform's org region. Do not claim US-only residency unless the customer's telephony instance is provisioned in a US region.
 - **Legal hold scope.** Legal hold in the platform covers platform-resident data. Recordings stored in external systems (e.g., S3) require separate retention management in that system. Do not conflate platform-layer legal hold with telephony-layer storage retention.
+- **Service-credential governance scope (Zero-Copy, data shares, external connectors).** Data Cloud connects to external platforms using a **single service credential** (PAT, Service Principal OAuth, OAuth app), not per end-user identity. Table-level and schema-level access is respected (the credential sees only what it is granted), but **per-user governance policies — RLS, CLS, ABAC, dynamic data masking — are NOT inherited** because the external platform sees Data Cloud as one identity. This applies to Zero-Copy (Databricks, Snowflake, BigQuery, Redshift), outbound data shares, and external connectors alike. Never claim "existing governance policies carry forward" or that an integration "respects column-level access controls" in a per-user sense. Running Zero-Copy queries in user context is roadmap (later 2026) — do not describe as current. See `data-360-cdp.md` → [Accuracy Guardrails — Service-Credential Authentication & Governance Inheritance].
 
 #### Evidence Framing
 
@@ -364,7 +367,7 @@ In this example, APIs (1 Q) merges into Data 360 and Support (1 Q) merges into I
 
 #### Phase 3: Spawn Subagents
 
-The orchestrator launches subagents using the `Task` tool with `subagent_type="generalPurpose"`. The number of agents matches the group count from [Dynamic Agent Sizing](#dynamic-agent-sizing) — not a fixed number. Launch up to **4 agents concurrently** in a single message (Task tool limit). If there are more than 4 groups, process in waves of 4.
+The orchestrator launches subagents using the `Task` tool with `subagent_type="general-purpose"`. The number of agents matches the group count from [Dynamic Agent Sizing](#dynamic-agent-sizing) — not a fixed number. Launch up to **4 agents concurrently** in a single message (Task tool limit). If there are more than 4 groups, process in waves of 4.
 
 **Agent sizing rule: cap each agent at ~20-25 questions.** Agents with 30+ questions risk context degradation — they start forgetting checklist items (product name replacement, sentence variety, source citation) toward the end of their batch. For a 144-question RFP, use 8 agents across 2 waves rather than 4 large agents. Smaller, focused batches produce sharper answers.
 
@@ -430,8 +433,8 @@ Build each subagent's prompt using the template at [templates/subagent-prompt.md
    - **Inline mode (default — no dedicated URL column):** The exact text written to each answer cell MUST include the `Sources:` block at the end. Do not strip, truncate, or separate sources from the answer text. The cell value the evaluator sees must contain both the answer and its sources as a single block of text.
    - **Separate column mode (sheet has a dedicated URL column):** Write the answer text WITHOUT a `Sources:` block. Write the source URLs to the designated URL column in the same row. Do not duplicate URLs in both locations.
 2. **Column detection (before writing):** Read the header row of each target tab to determine which columns to write to. Different tabs in the same RFP often use different column structures (e.g., Commercial Proposal may have a single response column C, while NFR has "Direct Response" in column D and "Descriptive Response" in column E). Map question numbers to exact sheet row numbers using the question-to-row mapping built from the sheet (see Document Format Detection). Section headers and blank rows create non-sequential row numbers — do not assume row N = question N; use the persisted mapping (e.g., `sheet-question-rows.json`).
-3. For Google Sheets: batch-write answers and review flags using `sheets_batch_update_values`. **For large answer sets (50+ questions), split writes into chunks of 25-40 rows per API call** to avoid payload limits and timeouts. Write review flags to the Review tab in separate batches after all answer cells are written.
-4. **Review tab:** Create with `sheets_insert_sheet` if it doesn't exist. If it already has entries from a prior session, use `sheets_append_values` with `insertDataOption: "INSERT_ROWS"` to add new review entries after the existing ones — do not overwrite existing review data.
+3. For Google Sheets: write answers and review flags. Preferred: `mcp__google-adc__sheets_write` (per range). Fallback: `mcp__mcp-gsheets__sheets_batch_update_values` (multiple ranges per call). **For large answer sets (50+ questions), split writes into chunks of 25-40 rows per API call** to avoid payload limits and timeouts. Write review flags to the Review tab in separate batches after all answer cells are written. See [google-workspace.md](reference/google-workspace.md) for full auth preference order (ADC first, service account fallback).
+4. **Review tab:** Create with `mcp__google-adc__sheets_add_tab` (preferred) or `mcp__mcp-gsheets__sheets_insert_sheet` (fallback) if it doesn't exist. If it already has entries from a prior session, append new review entries after the existing ones — do not overwrite existing review data. Preferred: `mcp__google-adc__sheets_write` to a range starting below the last used row. Fallback: `mcp__mcp-gsheets__sheets_append_values` with `insertDataOption: "INSERT_ROWS"`.
 5. For chat: present the full answer set to the user, sources included.
 6. Inform the user of completion and any questions flagged for SME or Legal review.
 

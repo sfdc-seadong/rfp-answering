@@ -1,6 +1,6 @@
 # Security & Compliance - Reference
 
-> **Last reviewed:** 2026-03
+> **Last reviewed:** 2026-04
 
 Reference material for Salesforce certifications, encryption, authentication, vulnerability management, and security practices.
 
@@ -8,13 +8,13 @@ Reference material for Salesforce certifications, encryption, authentication, vu
 
 ### Stable URLs
 - https://compliance.salesforce.com/en
-- https://trust.salesforce.com/en/compliance/
+- https://trust.salesforce.com/encompliance
 
 ## Security Overview & Practices
 
 ### Stable URLs
 - https://security.salesforce.com/
-- https://trust.salesforce.com/en/security/
+- https://security.salesforce.com/
 
 ### Search Queries
 - "security overview site:help.salesforce.com"
@@ -22,7 +22,7 @@ Reference material for Salesforce certifications, encryption, authentication, vu
 ## Encryption
 
 ### Stable URLs
-- https://developer.salesforce.com/docs/atlas.en-us.securityImplGuide.meta/securityImplGuide/security_pe_concepts.htm
+- https://help.salesforce.com/s/articleView?language=en_US&id=xcloud.security_pe_concepts.htm&type=5
 
 ### Search Queries
 - "Shield Platform Encryption overview site:help.salesforce.com"
@@ -51,7 +51,7 @@ Reference material for Salesforce certifications, encryption, authentication, vu
 ## Vulnerability & Penetration Testing
 
 ### Stable URLs
-- https://trust.salesforce.com/en/security/penetration-testing/
+- https://security.salesforce.com/penetration-testing/
 
 ### Search Queries
 - "security health check site:help.salesforce.com"
@@ -59,14 +59,13 @@ Reference material for Salesforce certifications, encryption, authentication, vu
 ## Incident Response & Trust
 
 ### Stable URLs
-- https://trust.salesforce.com/en/
-- https://trust.salesforce.com/en/trust-and-compliance-documentation/
+- https://trust.salesforce.com/en
+- https://trust.salesforce.com/entrust-and-compliance-documentation/
 
 ## FedRAMP / Government Cloud
 
 ### Stable URLs
-- https://www.salesforce.com/solutions/industries/government/
-- https://trust.salesforce.com/en/compliance/
+- https://trust.salesforce.com/encompliance
 
 ## HIPAA
 
@@ -76,8 +75,7 @@ Reference material for Salesforce certifications, encryption, authentication, vu
 ## Security Best Practices (Developer)
 
 ### Stable URLs
-- https://developer.salesforce.com/docs/atlas.en-us.securityImplGuide.meta/securityImplGuide/
-- https://architect.salesforce.com/decision-guides/security
+- https://developer.salesforce.com/docs/atlas.en-us.securityImplGuide.meta/securityImplGuide
 
 ## Key Native Capabilities
 

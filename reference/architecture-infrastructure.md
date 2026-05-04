@@ -1,6 +1,6 @@
 # Architecture & Infrastructure - Reference
 
-> **Last reviewed:** 2026-03
+> **Last reviewed:** 2026-04
 
 Reference material for Salesforce architecture, multi-tenancy, uptime, disaster recovery, data centers, and scalability.
 
@@ -8,13 +8,13 @@ Reference material for Salesforce architecture, multi-tenancy, uptime, disaster 
 
 ### Stable URLs
 - https://architect.salesforce.com/
-- https://architect.salesforce.com/fundamentals/platform-multitenant-architecture
+- https://architect.salesforce.com/docs/architect/fundamentals/guide/platform-multitenant-architecture.html
 - https://developer.salesforce.com/docs/atlas.en-us.fundamentals.meta/fundamentals/adg_preface.htm
 
 ## Multi-Tenant Architecture
 
 ### Stable URLs
-- https://architect.salesforce.com/fundamentals/platform-multitenant-architecture
+- https://architect.salesforce.com/docs/architect/fundamentals/guide/platform-multitenant-architecture.html
 
 ### Search Queries
 - "governor limits overview site:help.salesforce.com"
@@ -22,7 +22,7 @@ Reference material for Salesforce architecture, multi-tenancy, uptime, disaster 
 ## Hyperforce (Public Cloud Infrastructure)
 
 ### Stable URLs
-- https://www.salesforce.com/hyperforce/
+- https://www.salesforce.com/platform/public-cloud-infrastructure/
 
 ### Search Queries
 - "Hyperforce overview site:help.salesforce.com"
@@ -30,15 +30,14 @@ Reference material for Salesforce architecture, multi-tenancy, uptime, disaster 
 ## Trust & Uptime
 
 ### Stable URLs
-- https://trust.salesforce.com/en/
-- https://trust.salesforce.com/en/status/
-- https://trust.salesforce.com/en/trust-and-compliance-documentation/
+- https://trust.salesforce.com/en
+- https://trust.salesforce.com/enstatus/
+- https://trust.salesforce.com/entrust-and-compliance-documentation/
 
 ## Disaster Recovery & Business Continuity
 
 ### Stable URLs
-- https://trust.salesforce.com/en/security/disaster-recovery/
-- https://www.salesforce.com/products/backup-recovery/
+- https://trust.salesforce.com/ensecurity/disaster-recovery/
 
 ### Search Queries
 - "data export service site:help.salesforce.com"
@@ -53,12 +52,9 @@ Reference material for Salesforce architecture, multi-tenancy, uptime, disaster 
 
 ### Stable URLs
 - https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm
-- https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/
+- https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet
 
 ## Release Management
-
-### Stable URLs
-- https://www.salesforce.com/blog/salesforce-release-schedule/
 
 ### Search Queries
 - "Salesforce release notes site:help.salesforce.com"
@@ -75,8 +71,7 @@ Reference material for Salesforce architecture, multi-tenancy, uptime, disaster 
 
 ### Stable URLs
 - https://architect.salesforce.com/decision-guides/
-- https://architect.salesforce.com/decision-guides/data-architecture
-- https://architect.salesforce.com/decision-guides/security
+- https://architect.salesforce.com/decision-guides/data-integration
 
 ## Key Native Capabilities
 

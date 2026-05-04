@@ -1,6 +1,6 @@
 # Integrations & APIs - Reference
 
-> **Last reviewed:** 2026-03
+> **Last reviewed:** 2026-04
 
 Reference material for Salesforce APIs, integration patterns, SSO, MuleSoft, and connectors.
 
@@ -35,7 +35,7 @@ Reference material for Salesforce APIs, integration patterns, SSO, MuleSoft, and
 
 ### Stable URLs
 - https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/intro_stream.htm
-- https://developer.salesforce.com/docs/platform/platform-events/overview
+- https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm
 - https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/cdc_intro.htm
 - https://developer.salesforce.com/docs/platform/pub-sub-api/overview
 
@@ -55,6 +55,23 @@ Reference material for Salesforce APIs, integration patterns, SSO, MuleSoft, and
 
 ### Search Queries
 - "MuleSoft Composer overview site:help.salesforce.com"
+
+## Agent Script
+
+### Stable URLs
+- https://developer.salesforce.com/docs/ai/agentforce/guide/agent-script.html
+- https://github.com/salesforce/agent-script
+
+### Search Queries
+- "Agent Script language site:developer.salesforce.com"
+
+### Key Details
+
+Open-source agent definition language (TDX April 2026). Defines when agents use LLM reasoning versus deterministic logic. Works as a base language with platform-specific dialects:
+- **Agentforce dialect**: Native Salesforce agent orchestration
+- **MuleSoft Agent Fabric dialect**: Hybrid integration across Salesforce and external systems
+
+Full language specification, grammar, parser, and compiler available on GitHub.
 
 ## Salesforce Connect (External Objects)
 
@@ -87,13 +104,13 @@ Reference material for Salesforce APIs, integration patterns, SSO, MuleSoft, and
 ## Integration Patterns (Architecture)
 
 ### Stable URLs
-- https://architect.salesforce.com/decision-guides/integration-architecture
-- https://developer.salesforce.com/docs/atlas.en-us.integration_patterns_and_practices.meta/integration_patterns_and_practices/
+- https://architect.salesforce.com/decision-guides/data-integration
+- https://architect.salesforce.com/docs/architect/fundamentals/guide/integration-patterns.html
 
 ## API Limits Reference
 
 ### Stable URLs
-- https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/
+- https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet
 
 ## Key Native Capabilities
 
@@ -115,6 +132,7 @@ When reference URLs fail or return thin results, use this section as a fallback.
 | Named Credentials | Yes | Secure callout authentication management |
 | MuleSoft integration middleware | Yes (add-on) | Enterprise integration platform with 400+ connectors |
 | MuleSoft Composer (no-code) | Yes (add-on) | Point-and-click integration builder |
+| Agent Script (agent definition language) | Yes (open-source) | Define agent behavior with deterministic + LLM logic; Agentforce and MuleSoft Agent Fabric dialects |
 | Connected Apps / OAuth | Yes | Secure third-party app authentication |
 
 ## Search Fallback

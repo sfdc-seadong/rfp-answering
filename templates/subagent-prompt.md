@@ -30,6 +30,7 @@ Verify every item before drafting any answer:
 - [ ] Telephony behaviors (recording, storage, transcription) belong to the telephony provider layer, not the platform
 - [ ] Recording storage region is determined by telephony provider config, not org region
 - [ ] Legal hold covers platform-resident data only — external storage needs separate retention
+- [ ] External integration governance claims (Zero-Copy, data shares, connectors) do NOT overclaim per-user RLS/CLS/ABAC inheritance — see Accuracy Guardrails
 - [ ] Every answer includes source URLs — inline `Sources:` block by default, or in a separate `Source URLs:` return field if the format directives specify a dedicated URL column
 
 ### Scoring Strategy
@@ -59,6 +60,7 @@ The goal is to **win the RFP**. If a capability can be achieved on the platform 
 | **Conflating adjacent features** | Describing frequency optimization as "message prioritization" | EEF determines *whether* to send (saturation); prioritization determines *which* message to send. Use precise language. |
 | **Describing manual processes as automated** | Writing "the platform automatically surfaces all downstream consumers of a field" when an admin must navigate the lineage graph manually | If it requires clicking through multiple screens, it is "supported with manual navigation," not "automated." |
 | **Composing a workflow and calling it native** | Combining segment exclusion + frequency caps + custom Flow logic and calling it "native cross-journey arbitration" | If the customer must design a multi-component workflow, score 3-4, not 5. |
+| **Overclaiming governance inheritance on external integrations** | Stating "Zero-Copy respects Unity Catalog's column-level access controls", "existing governance policies carry forward", or "data shares inherit GDPR enforcement" | Data Cloud authenticates to external platforms as a single service credential, not per end user. Per-user RLS/CLS/ABAC is NOT inherited — only table/schema-level access scoped to the service credential is respected. Applies to Zero-Copy, data shares, and external connectors. |
 
 #### Defensibility Test
 
@@ -87,6 +89,7 @@ The goal is to **win the RFP**. If a capability can be achieved on the platform 
 - **Add-on vs. included.** Shield Platform Encryption, Event Monitoring, and Field Audit Trail are paid add-ons. Use "available as an add-on" or "with enhanced security licensing."
 - **Data residency for recordings.** Recording storage region is determined by the telephony provider's instance configuration, not the platform's org region.
 - **Legal hold scope.** Legal hold covers platform-resident data. Recordings in external systems require separate retention management.
+- **Service-credential governance scope (Zero-Copy, data shares, external connectors).** Data Cloud connects to external platforms using a **single service credential** (PAT, Service Principal OAuth, OAuth app), not per end-user identity. Table-level and schema-level access is respected (the credential sees only what it is granted), but **per-user governance policies — RLS, CLS, ABAC, dynamic data masking — are NOT inherited** because the external platform sees Data Cloud as one identity. This applies to Zero-Copy (Databricks, Snowflake, BigQuery, Redshift), outbound data shares, and external connectors alike. Never claim "existing governance policies carry forward" or that an integration "respects column-level access controls" in a per-user sense. Running Zero-Copy queries in user context is roadmap (later 2026) — do not describe as current.
 
 ### Evidence Framing
 

@@ -1,6 +1,6 @@
 # Data 360 & CDP - Reference
 
-> **Last reviewed:** 2026-03
+> **Last reviewed:** 2026-04
 
 Reference material for Salesforce Data 360 (formerly Data Cloud / Customer Data Platform), including segmentation, identity resolution, activation, connectors, zero-copy data sharing, and platform limits.
 
@@ -16,8 +16,7 @@ Reference material for Salesforce Data 360 (formerly Data Cloud / Customer Data 
 ## Data Streams & Ingestion
 
 ### Stable URLs
-- https://developer.salesforce.com/docs/data/data-cloud-ref/guide/c360a-api-get-started.html
-- https://developer.salesforce.com/docs/data/data-cloud-ref/guide
+- https://developer.salesforce.com/docs/data/data-cloud-int/references/data-cloud-ingestionapi-ref/c360-a-api-get-started.html
 
 ### Search Queries
 - "Data Cloud data streams ingestion site:help.salesforce.com"
@@ -25,17 +24,13 @@ Reference material for Salesforce Data 360 (formerly Data Cloud / Customer Data 
 ## Data Model Objects (DMOs) & Data Mapping
 
 ### Stable URLs
-- https://developer.salesforce.com/docs/data/data-cloud-ref/guide/c360a-api-isv-readiness-data.html
+- https://developer.salesforce.com/docs/data/data-cloud-dmo-mapping/guide/c360a-api-isv-readiness-data.html
 
 ### Search Queries
 - "Data Cloud data model objects DMO site:help.salesforce.com"
 - "Data Cloud data mapping site:help.salesforce.com"
 
 ## Identity Resolution
-
-### Stable URLs
-- https://trailhead.salesforce.com/content/learn/projects/quick-start-create-identity-resolution-ruleset
-- https://trailhead.salesforce.com/content/learn/projects/quick-start-create-identity-resolution-ruleset/get-started-with-identity-resolution-ruleset
 
 ### Search Queries
 - "Data Cloud identity resolution site:help.salesforce.com"
@@ -50,7 +45,6 @@ Reference material for Salesforce Data 360 (formerly Data Cloud / Customer Data 
 ## Segmentation
 
 ### Stable URLs
-- https://trailhead.salesforce.com/content/learn/projects/quick-start-create-a-data-cloud-segment/create-and-activate-a-segment-in-data-cloud
 - https://trailhead.salesforce.com/content/learn/modules/data-cloud-query-and-segment/run-queries-and-personalize-engagement-with-segmentation
 - https://trailhead.salesforce.com/content/learn/projects/explore-data-cloud-core-functionality/build-a-segment-and-report
 
@@ -74,27 +68,54 @@ Reference material for Salesforce Data 360 (formerly Data Cloud / Customer Data 
 ## Real-Time / Streaming Ingestion & Activation
 
 ### Stable URLs
-- https://developer.salesforce.com/docs/data/data-cloud-int/references/data-cloud-ingestionapi-ref/c360-a-real-time-ingestion-api.html
-- https://developer.salesforce.com/docs/data/data-cloud-int/guide/c360-a-create-eventbusconnector-data-stream.html
-- https://developer.salesforce.com/docs/data/data-cloud-int/guide/c360-a-mobile-web-datastream.html
 - https://developer.salesforce.com/blogs/2024/08/automate-your-workflow-with-data-cloud-triggered-flows-and-invocable-actions
 
 ## Calculated Insights
 
-### Stable URLs
-- https://developer.salesforce.com/docs/data/data-cloud-ref/guide/c360a-api-calculated-insights.html
-
 ### Search Queries
 - "Data Cloud calculated insights site:help.salesforce.com"
 
-## Zero-Copy Data Sharing
+## Zero-Copy Data Federation & Sharing
 
 ### Stable URLs
 - https://trailhead.salesforce.com/content/learn/modules/data-cloud-with-zero-copy/get-started-with-zero-copy-data-sharing
 - https://developer.salesforce.com/blogs/2024/08/zero-copy-data-federation-with-snowflake-and-salesforce-data-cloud
+- https://trailhead.salesforce.com/content/learn/modules/data-cloud-with-zero-copy/get-started-with-zero-copy-data-federation
 
 ### Search Queries
 - "Data Cloud zero-copy data sharing site:help.salesforce.com"
+
+### Key Concepts
+
+Zero-Copy consists of two capabilities:
+- **Data Federation**: Gives Data 360 access to external data (Snowflake, Databricks, BigQuery, Redshift) without copying it in.
+- **Data Sharing**: Gives external systems access to Data 360 data without exporting it out.
+
+### Governance Note
+See top-level [Accuracy Guardrails — Service-Credential Authentication & Governance Inheritance](#accuracy-guardrails--service-credential-authentication--governance-inheritance) section for critical constraints on governance claims.
+
+## Data 360 Clean Rooms
+
+### Stable URLs
+- https://www.salesforce.com/blog/introducing-data360-clean-rooms/
+
+### Search Queries
+- "Data 360 clean rooms site:help.salesforce.com"
+- "Data Cloud clean rooms privacy site:salesforce.com"
+
+### Key Details
+
+Data 360 Clean Rooms are **generally available** (announced TDX April 2026). Privacy-safe data collaboration that enables multiple parties to analyze datasets together without moving or exposing raw data.
+
+| Capability | Details |
+|---|---|
+| Private join mechanism | Encrypted keys ensure no raw PII is exchanged between parties |
+| Policy-based controls | Governance rules define what data can be queried and what aggregations are permitted |
+| Real-time analysis | Collaborative queries run without data movement |
+| Native AWS integration | Built on AWS Clean Rooms for cross-cloud collaboration |
+| Zero-Copy foundation | Leverages existing zero-copy architecture — no data duplication |
+
+**Use cases:** Retail/CPG attribution matching, financial services fraud detection, travel/hospitality guest personalization, media audience overlap analysis.
 
 ## Connectors
 
@@ -107,7 +128,7 @@ Reference material for Salesforce Data 360 (formerly Data Cloud / Customer Data 
 
 ### Stable URLs
 - https://www.salesforce.com/agentforce/
-- https://developer.salesforce.com/docs/einstein/genai/overview
+- https://developer.salesforce.com/docs/ai/agentforce/overview
 
 ### Search Queries
 - "Data Cloud Agentforce copilot site:help.salesforce.com"
@@ -123,14 +144,55 @@ Reference material for Salesforce Data 360 (formerly Data Cloud / Customer Data 
 ## Data 360 APIs
 
 ### Stable URLs
-- https://developer.salesforce.com/docs/atlas.en-us.c360a_api.meta/c360a_api/c360a_api_quick_start.htm
-- https://developer.salesforce.com/docs/data/data-cloud-ref/guide/c360a-api-get-started.html
+- https://developer.salesforce.com/docs/data/data-cloud-ref/guide/c360a-api-quick-start.html
+- https://developer.salesforce.com/docs/data/data-cloud-int/references/data-cloud-ingestionapi-ref/c360-a-api-get-started.html
 
 ## Trailhead Learning Paths
 
 ### Stable URLs
-- https://trailhead.salesforce.com/content/learn/trails/get-started-with-data-cloud
-- https://trailhead.salesforce.com/content/learn/modules/data-cloud-quick-look
+- https://trailhead.salesforce.com/content/learn/trails/unlock-your-data-with-data-cloud
+- https://trailhead.salesforce.com/content/learn/modules/service-and-data-cloud-quick-look
+
+## Accuracy Guardrails — Service-Credential Authentication & Governance Inheritance
+
+**CRITICAL — Read before answering ANY question about governance, access control, or policy inheritance across Data 360 integrations.**
+
+Data 360 connects to external platforms (data warehouses, lakehouses, cloud storage, third-party systems) using a **single service credential** — not per end-user identity. This is an architectural pattern that applies broadly, not just to one connector type.
+
+### What This Means
+
+| What's respected | What's NOT inherited | Why |
+|---|---|---|
+| **Table-level / schema-level access** — the service credential can only see objects it has been granted access to | **Per-user RLS/CLS** — row-level security, column-level security, dynamic data masking, or any policy scoped to individual end-user identity | The external platform sees Data 360 as **one identity** (the service principal / PAT / OAuth app), not as the individual user viewing data in Data 360 |
+| **Object-level permissions** on the service credential | **ABAC / attribute-based policies** tied to user attributes (department, role, geography) | Same reason — no per-user context is passed through |
+
+### Where This Applies
+
+| Integration pattern | Auth method | Governance inherited? |
+|---|---|---|
+| **Zero-Copy** (Databricks, Snowflake, BigQuery, Redshift) | PAT, Service Principal OAuth, OAuth User token | Table-level only — not per-user RLS/CLS |
+| **Data shares** (outbound from Data 360) | Varies by target | Data shares do not honor Data 360 governance or GDPR enforcement; only specific objects should be shared and setup must be admin-controlled |
+| **External connectors / data streams** | OAuth app, service account, API key | Credential-scoped access only |
+
+### Roadmap
+
+Running Zero-Copy queries in **user context** — which would honor the external platform's per-user governance policies — is planned for later in 2026. Do NOT describe this as current GA capability.
+
+### Correct Framing
+
+> "Zero-Copy integrates with [Unity Catalog / Snowflake governance] and authenticates via PAT or Service Principal OAuth — so table-level access is respected based on what that service credential is permitted to see. However, the CDP currently runs queries in a single service context, not per end-user context, so it doesn't inherit per-user row-level or column-level security policies from [Unity Catalog / Snowflake] today. Running Zero-Copy queries in user context — which would fully honor the external platform's governance policies per user — is on the roadmap for later this year."
+
+### Wrong Framing (DO NOT USE)
+
+> "Zero-Copy respects Unity Catalog's column-level access controls. Existing governance policies carry forward."
+
+> "Data shares inherit Data Cloud's GDPR enforcement and consent policies."
+
+> "The platform's security model extends to the data warehouse layer."
+
+### General Rule
+
+**Any time a question asks whether the customer's existing governance / security policies "carry forward" or are "respected" by Data 360, qualify the answer by specifying which level of access control is inherited (table/schema-level via service credential) versus which is not (per-user RLS/CLS/ABAC).** Never imply blanket governance inheritance.
 
 ## Key Native Capabilities (Quick Reference)
 
@@ -178,11 +240,12 @@ When reference URLs fail or return thin results, use this section as a floor. Th
 | Capability | Native? | Notes |
 |---|---|---|
 | 200+ pre-built connectors | **Yes — native** | Connectors span CRMs, ad platforms, databases, cloud storage, marketing tools. |
-| Zero-copy data sharing | **Yes — native** | Bidirectional data access with Snowflake, Databricks, BigQuery, Amazon Redshift — no data movement. |
+| Zero-copy data sharing | **Yes — native** | Bidirectional data access with Snowflake, Databricks, BigQuery, Amazon Redshift — no data movement. **Governance caveat:** authenticates as a single service credential, NOT per end user — does not inherit per-user RLS/CLS from the external platform. See [Accuracy Guardrails](#accuracy-guardrails--service-credential-authentication--governance-inheritance). |
 | Streaming Ingestion API | **Yes — native** | Near-real-time event processing. Verify current latency benchmarks against latest release notes. |
 | AWS S3 and Redshift connectors | **Yes — native** | S3 for file-based ingestion. Redshift via zero-copy federation with IDP-based auth. |
 | Web SDK / Mobile SDK | **Yes — native** | Client-side data collection for engagement and profile data. |
 | Data quality and validation rules | **Yes — native** | Data mapping layer applies validation, standardization, and normalization during ingestion. |
+| Clean Rooms (privacy-safe collaboration) | **Yes — native (GA)** | Multi-party data analysis without moving or exposing raw data. Built on zero-copy architecture with encrypted private joins. Native AWS Clean Rooms integration. |
 
 ### Reporting & Analytics — Native
 
@@ -197,8 +260,8 @@ When reference URLs fail or return thin results, use this section as a floor. Th
 
 | Capability | Native? | Notes |
 |---|---|---|
-| Unified Lineage (object-level and field-level) | **Yes — native, auto-enabled** | Visual relationship graph showing how data objects are connected from source through activation. Field-level lineage covers DLOs, data transforms, DMOs, CIs, segments, activations, identity resolutions, data graphs, and data shares. Object-level lineage additionally covers data streams, connection info, semantic data models, and unstructured objects. No setup required — automatically enabled in all orgs. URL: `https://help.salesforce.com/s/articleView?language=en_US&id=data.c360_a_viewing_data_lineage.htm&type=5` |
-| Data Cloud Jobs monitoring | **Yes — native** | Dedicated monitoring console for Data Cloud-specific jobs: data stream ingestion, identity resolution, segment refresh, activation publish. Shows status, timing, record counts, errors. This is NOT the core platform jobs page — it is DC-specific. URL: `https://help.salesforce.com/s/articleView?id=xcloud.data_monitoring_jobs.htm&language=en_US&type=5` |
+| Unified Lineage (object-level and field-level) | **Yes — native, auto-enabled** | Visual relationship graph showing how data objects are connected from source through activation. Field-level lineage covers DLOs, data transforms, DMOs, CIs, segments, activations, identity resolutions, data graphs, and data shares. Object-level lineage additionally covers data streams, connection info, semantic data models, and unstructured objects. No setup required — automatically enabled in all orgs. URL: `https://help.salesforce.com/s/articleView?language=en_US&id=data.c360_a_viewing_data_lineage.htm&type=5%60 |
+| Data Cloud Jobs monitoring | **Yes — native** | Dedicated monitoring console for Data Cloud-specific jobs: data stream ingestion, identity resolution, segment refresh, activation publish. Shows status, timing, record counts, errors. This is NOT the core platform jobs page — it is DC-specific. URL: `https://help.salesforce.com/s/articleView?language=en_US&id=xcloud.data_monitoring_jobs.htm&type=5%60 |
 | Downstream impact analysis (automated) | **No — manual navigation** | Unified Lineage shows field-level dependencies visually, but there is no automated "click a field and see all affected segments/activations" feature. Administrators trace dependencies by navigating the lineage graph. Do NOT describe this as automated one-click impact analysis. Score 3 on questions about automated impact analysis. |
 
 ## Search Fallback

@@ -2,35 +2,55 @@
 
 The RFP skill supports reading from and writing to Google Sheets and Google Docs. When the user shares a Google URL, detect the document type and use the appropriate approach.
 
-## Service Account & Access
+## Access Model (Claude Code)
 
-A Google service account is configured at `/Users/sea.dong/mcp-servers/mcp-gsheets/` with credentials at `service-account-key.json`.
+Two Google integrations are registered. **Prefer `mcp__google-adc__*` first** — it uses the user's own Google OAuth (Application Default Credentials), so it can reach any Sheet, Doc, Drive file, Gmail, Calendar, etc. that the user already has access to. **No sharing step is required.**
 
-**Service account email:** `rfp-sheets-agent@ehc-sea-dong-c4f13a.iam.gserviceaccount.com`
+| Preference | MCP prefix | Auth | Reach |
+|------------|-----------|------|-------|
+| **1st (default)** | `mcp__google-adc__*` | User's Google OAuth (ADC) | Anything the user can access |
+| 2nd (fallback) | `mcp__mcp-gsheets__*` | Service account | Only docs shared with `rfp-sheets-agent@ehc-sea-dong-c4f13a.iam.gserviceaccount.com` |
+| 3rd (last resort) | Direct `googleapis` script in `/Users/sea.dong/mcp-servers/mcp-gsheets/` | Service account key | Same as #2 |
 
-When accessing a Google document for the first time:
-
-1. Attempt to read the document using the Google API (via the `googleapis` npm package in the mcp-gsheets directory).
-2. If access fails with a **403 Permission Denied** error, immediately instruct the user to share the document with the service account email above (Editor access for Sheets the agent will write to, Viewer for read-only Docs).
-3. Once the user confirms sharing, retry the API call.
+**Do NOT prompt the user to share a sheet with the service account on the first attempt.** Try `mcp__google-adc__*` first. Only fall back to the service account MCP if an ADC call returns "tool not available" or a non-403 error that the service-account path can work around. If the ADC call returns 403/404 for a sheet the user says they own, the issue is likely the URL or OAuth scope — re-verify before falling back.
 
 ## Connecting to Google APIs
 
-The `mcp-gsheets` MCP server may or may not be registered in Cursor's runtime. Use this fallback order:
+### Path 1 (preferred): `mcp__google-adc__*` — user OAuth
 
-1. **Try `CallMcpTool`** with server `user-mcp-gsheets` first. Note: Cursor prefixes user-defined MCP servers with `user-`; the server is defined as `mcp-gsheets` in `~/.cursor/mcp.json` but registered as `user-mcp-gsheets` at runtime. Available tools:
+Use these tools for Sheets operations:
+
+| Tool | Use For |
+|------|---------|
+| `mcp__google-adc__sheets_get_info` | List all tabs, discover sheet structure (equivalent to `sheets_get_metadata`) |
+| `mcp__google-adc__sheets_read` | Read a range |
+| `mcp__google-adc__sheets_write` | Write to a range |
+| `mcp__google-adc__sheets_add_tab` | Create a new tab (use for Review tab) |
+| `mcp__google-adc__sheets_format_cells` | Cell formatting |
+| `mcp__google-adc__sheets_create` | Create a new spreadsheet |
+
+Also available under `mcp__google-adc__*`: Gmail (`gmail_search`, `gmail_get_message`, ...), Drive (`drive_search`, `drive_get_content`, ...), Docs (`docs_get_text`, `docs_create`, ...), Calendar, Forms, Slides, Tasks.
+
+### Path 2 (fallback): `mcp__mcp-gsheets__*` — service account
+
+Only use when Path 1 is unavailable. The service account (`rfp-sheets-agent@ehc-sea-dong-c4f13a.iam.gserviceaccount.com`) requires the user to explicitly share the sheet first (Editor for write, Viewer for read). Available tools:
 
    | Tool | Use For |
    |------|---------|
-   | `sheets_check_access` | Verify permissions before reading/writing |
-   | `sheets_get_metadata` | List all tabs, discover sheet structure |
-   | `sheets_get_values` | Read a single range (e.g., one tab's headers) |
-   | `sheets_batch_get_values` | Read multiple ranges in one call — use this to read headers from all tabs at once |
-   | `sheets_update_values` | Write to a single range |
-   | `sheets_batch_update_values` | Write to multiple ranges in one call — primary tool for writing answers |
-   | `sheets_insert_sheet` | Create a new tab — use this to create the Review tab |
-   | `sheets_append_values` | Append rows to an existing table — use this to add entries to an existing Review tab (set `insertDataOption: "INSERT_ROWS"` to avoid overwriting) |
-2. **If the MCP server is unavailable**, call the Google API directly by writing and running a `.cjs` script in `/Users/sea.dong/mcp-servers/mcp-gsheets/` (the `googleapis` package and service account key are already installed there). Clean up the script after use.
+   | `mcp__mcp-gsheets__sheets_check_access` | Verify permissions before reading/writing |
+   | `mcp__mcp-gsheets__sheets_get_metadata` | List all tabs, discover sheet structure |
+   | `mcp__mcp-gsheets__sheets_get_values` | Read a single range |
+   | `mcp__mcp-gsheets__sheets_batch_get_values` | Read multiple ranges in one call |
+   | `mcp__mcp-gsheets__sheets_update_values` | Write to a single range |
+   | `mcp__mcp-gsheets__sheets_batch_update_values` | Batch-write multiple ranges |
+   | `mcp__mcp-gsheets__sheets_insert_sheet` | Create a new tab (use for Review tab) |
+   | `mcp__mcp-gsheets__sheets_append_values` | Append rows (set `insertDataOption: "INSERT_ROWS"` to avoid overwriting) |
+
+If accessing for the first time via Path 2 and it fails with **403 Permission Denied**, instruct the user to share the document with the service account email, then retry.
+
+### Path 3 (last resort): direct `googleapis` script
+
+If both MCPs are unavailable, write and run a `.cjs` script in `/Users/sea.dong/mcp-servers/mcp-gsheets/` (the `googleapis` package and service account key are already installed there). Clean up the script after use. This path also uses the service account, so sharing is required.
 
 ## URL Detection
 
@@ -46,7 +66,7 @@ Extract the document ID from between `/d/` and the next `/`.
 ### Step 1: Discover Tabs
 
 1. Extract the spreadsheet ID from the URL.
-2. Call `sheets_get_metadata` to list all tabs by name.
+2. Call `mcp__google-adc__sheets_get_info` (preferred) or `mcp__mcp-gsheets__sheets_get_metadata` (fallback) to list all tabs by name.
 3. Classify each tab by its likely role:
 
    | Tab Name Patterns | Role | Action |
@@ -63,7 +83,7 @@ Before classifying questions, check instruction-type tabs for custom scoring rub
 
 ### Step 3: Read Headers from All Question Tabs
 
-Use `sheets_batch_get_values` to read the header row (typically row 1) from every question tab in a single call. This reveals each tab's column structure — which columns hold question numbers, question text, response fields, scoring, notes, and documentation URLs.
+Read the header row (typically row 1) from every question tab. Use `mcp__google-adc__sheets_read` (preferred — one call per tab) or `mcp__mcp-gsheets__sheets_batch_get_values` (fallback — reads multiple ranges in one call). This reveals each tab's column structure — which columns hold question numbers, question text, response fields, scoring, notes, and documentation URLs.
 
 Different tabs in the same RFP often use different column layouts. Record the column mapping per tab.
 
@@ -95,12 +115,12 @@ This mapping is essential for multi-tab write-back — the orchestrator needs to
 1. **Approval flow:** The user approves the plan in Phase 1 (summary table) before drafting. Write directly after subagents complete — no additional approval gate.
 2. Use the question-to-row mapping built during format detection (from reading the sheet row-by-row) to write each answer to the correct tab, row, and column. **Never assume sequential row numbers** — section headers and blank rows mean question N may not be in row N. Different tabs may use different column structures.
 3. If the RFP sheet has specific columns for answers (e.g., "Vendor Response", "Compliance Status", "Notes"), map the template fields to those columns.
-4. Use `sheets_batch_update_values` to write all answers. For large answer sets (50+ questions), split into chunks of 25-40 rows per call.
+4. Write all answers. Preferred: one `mcp__google-adc__sheets_write` call per range. Fallback: `mcp__mcp-gsheets__sheets_batch_update_values` (one call covers multiple ranges). For large answer sets (50+ questions), split into chunks of 25-40 rows per call.
 5. **Review tab:**
-   - Check if a "Review" tab already exists (from `sheets_get_metadata`).
-   - If it does not exist, create it with `sheets_insert_sheet` (title: "Review").
-   - If it already has entries from a prior session, use `sheets_append_values` with `insertDataOption: "INSERT_ROWS"` to add new review entries after the existing ones.
-   - If it is empty or newly created, write headers and entries with `sheets_batch_update_values`.
+   - Check if a "Review" tab already exists (from the tab discovery call in Step 1).
+   - If it does not exist, create it with `mcp__google-adc__sheets_add_tab` (preferred) or `mcp__mcp-gsheets__sheets_insert_sheet` (fallback). Title: "Review".
+   - If it already has entries from a prior session, append new entries after the existing ones. Preferred: `mcp__google-adc__sheets_write` to a range starting below the last row. Fallback: `mcp__mcp-gsheets__sheets_append_values` with `insertDataOption: "INSERT_ROWS"`.
+   - If it is empty or newly created, write headers and entries with `mcp__google-adc__sheets_write` (preferred) or `mcp__mcp-gsheets__sheets_batch_update_values` (fallback).
    - See [spreadsheet-format.md](../templates/spreadsheet-format.md) for the column spec and timestamp format.
 
 ## Reading RFP Questions from a Google Doc
