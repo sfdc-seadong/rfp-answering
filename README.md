@@ -14,6 +14,12 @@ Claude Code auto-discovers skills under `~/.claude/skills/`. The skill is active
 
 ## Prerequisites
 
+### Claude Code
+
+This skill requires Claude Code (the CLI), not Claude.ai. The orchestrator + subagent workflow uses the `Task` tool, and reference fetching uses `WebFetch` and `WebSearch`. All three must be enabled in your harness.
+
+### Google Workspace MCP (optional)
+
 Drafting works out of the box. Reading from / writing to Google Sheets and Docs requires Google MCP servers:
 
 - `mcp__google-adc__*` — Google Workspace tools (Sheets, Docs, Drive, Gmail, Calendar). Preferred.
